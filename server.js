@@ -24,7 +24,7 @@ passport.use(new SpotifyStrategy({
     clientID: process.env.SPOTIFY_CLIENT_ID,
     clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
     // callbackURL: 'http://localhost:8888/callback',
-    callbackURL: 'https://spot-47wl5zr4n-klara-orbans-projects.vercel.app/callback',
+    callbackURL: 'https://spot-p6j2w2vsk-klara-orbans-projects.vercel.app/callback',
 }, (accessToken, refreshToken, expires_in, profile, done) => {
     profile.accessToken = accessToken;
     profile.refreshToken = refreshToken;
