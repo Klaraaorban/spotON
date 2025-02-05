@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Dashboard</title>
+</head>
+<body>
+    <h1>Welcome to Your Dashboard</h1>
+    <button id="fetch-tracks">Show My Tracks</button>
+    <div id="tracks"></div>
+
+    <script>
+        document.getElementById('fetch-tracks').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/api/tracks');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch tracks');
+                }
+                const tracks = await response.json();
+                const tracksDiv = document.getElementById('tracks');
+                tracksDiv.innerHTML = '<h2>Your Top Tracks:</h2><ul>' + 
+                    tracks.map(track => `<li>${track.name} by ${track.artist}</li>`).join('') + 
+                    '</ul>';
+            } catch (error) {
+                console.error(error);
+                document.getElementById('tracks').innerText = 'Error fetching tracks';
+            }
+        });
+    </script>
+</body>
+</html>
