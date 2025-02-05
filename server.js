@@ -24,7 +24,7 @@ passport.use(new SpotifyStrategy({
     clientID: process.env.SPOTIFY_CLIENT_ID,
     clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
     // callbackURL: 'http://localhost:8888/callback',
-    callbackURL: 'https://spot-p6j2w2vsk-klara-orbans-projects.vercel.app/callback',
+    callbackURL: 'https://spot-lc6yht67r-klara-orbans-projects.vercel.app/callback',
 }, (accessToken, refreshToken, expires_in, profile, done) => {
     profile.accessToken = accessToken;
     profile.refreshToken = refreshToken;
@@ -76,8 +76,3 @@ app.get('/api/tracks', async (req, res) => {
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html'); // Serve the login page
 });
-
-//not needed on Vercel
-// app.listen(8888, () => {
-//     console.log('Server running on https://spot-47wl5zr4n-klara-orbans-projects.vercel.app/callback');
-// });
