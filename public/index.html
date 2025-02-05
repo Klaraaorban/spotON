@@ -4,9 +4,65 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spotify Login</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #191414; /* Spotify's dark theme */
+            color: #FFFFFF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            text-align: center;
+            background-color: #282828; /* Slightly lighter dark */
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        a {
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #FFFFFF;
+            background-color: #1DB954; /* Spotify green */
+            padding: 15px 30px;
+            border-radius: 30px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: inline-block;
+        }
+
+        a:hover {
+            background-color: #1ed760; /* Brighter green on hover */
+            transform: scale(1.05); /* Slight pop effect */
+        }
+
+        .logo {
+            width: 100px;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to Spotify App</h1>
-    <a href="/auth/spotify">Log in with Spotify</a>
+    <div class="container">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg" alt="Spotify Logo" class="logo">
+        <h1>Welcome to Spotify App</h1>
+        <a href="/auth/spotify">Log in with Spotify</a>
+    </div>
 </body>
 </html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -29,4 +29,122 @@
         });
     </script>
 </body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Dashboard</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #191414; /* Spotify's dark theme */
+            color: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: #1DB954; /* Spotify Green */
+            margin-bottom: 20px;
+        }
+
+        #fetch-tracks {
+            font-size: 1.2rem;
+            padding: 15px 30px;
+            background-color: #1DB954; /* Spotify Green */
+            color: #FFFFFF;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 20px;
+        }
+
+        #fetch-tracks:hover {
+            background-color: #1ed760; /* Brighter green on hover */
+            transform: scale(1.05);
+        }
+
+        #tracks {
+            margin-top: 30px;
+            width: 80%;
+            max-width: 600px;
+            background-color: #282828; /* Slightly lighter dark for contrast */
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.5);
+            display: none; /* Hide until tracks are shown */
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            font-size: 1.2rem;
+            margin: 10px 0;
+            color: #B3B3B3; /* Spotify light gray */
+            font-weight: bold;
+        }
+
+        .track-name {
+            color: #FFFFFF; /* White for track names */
+        }
+
+        .artist-name {
+            color: #B3B3B3; /* Lighter gray for artists */
+        }
+    </style>
+</head>
+<body>
+    <h1>Your Spotify Dashboard</h1>
+    <button id="fetch-tracks">Show My Tracks</button>
+    <div id="tracks">
+        <h2>Your Top Tracks</h2>
+        <ul id="track-list"></ul>
+    </div>
+
+    <script>
+        document.getElementById('fetch-tracks').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/api/tracks');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch tracks');
+                }
+                const tracks = await response.json();
+                const trackList = document.getElementById('track-list');
+                trackList.innerHTML = ''; // Clear the list first
+
+                tracks.forEach(track => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<span class="track-name">${track.name}</span> by <span class="artist-name">${track.artist}</span>`;
+                    trackList.appendChild(li);
+                });
+
+                // Show the tracks section
+                document.getElementById('tracks').style.display = 'block';
+            } catch (error) {
+                console.error(error);
+                document.getElementById('tracks').innerText = 'Error fetching tracks';
+            }
+        });
+    </script>
+</body>
 </html>
+
