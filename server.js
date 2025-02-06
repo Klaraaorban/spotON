@@ -32,8 +32,11 @@ passport.deserializeUser((user, done) => {
 passport.use(new SpotifyStrategy({
     clientID: process.env.SPOTIFY_CLIENT_ID,
     clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-    callbackURL: 'https://www.spot-on-wrapped.me/callback',
+    callbackURL: 'https://www.spot-on-wrapped.me/callback', // Update this for local testing if necessary
 }, (accessToken, refreshToken, expires_in, profile, done) => {
+    console.log("Spotify Authentication Flow triggered...");
+    console.log("Received access token: ", accessToken);
+    console.log("Received refresh token: ", refreshToken);
     profile.accessToken = accessToken;
     profile.refreshToken = refreshToken;
     return done(null, profile);
@@ -47,10 +50,14 @@ app.get("/auth/spotify", passport.authenticate('spotify', {
         'user-top-read', 'playlist-read-private', 'playlist-read-collaborative',
         'playlist-modify-public', 'playlist-modify-private'
     ]
-}));
+}), (req, res) => {
+    console.log("Spotify Authentication Route reached!");
+    res.redirect('/dashboard');
+});
 
 // Spotify Callback Route
 app.get('/callback', passport.authenticate('spotify', { failureRedirect: '/' }), (req, res) => {
+    console.log("Callback route reached!");
     req.session.accessToken = req.user.accessToken;
     req.session.refreshToken = req.user.refreshToken;
 
@@ -61,6 +68,7 @@ app.get('/callback', passport.authenticate('spotify', { failureRedirect: '/' }),
     })
     .then(response => {
         req.session.profile = response.data; // Store profile in session
+        console.log("User Profile Data: ", response.data);
         res.redirect('/dashboard');  // Redirect to the dashboard after successful authentication
     })
     .catch(error => {
@@ -74,39 +82,8 @@ app.get('/dashboard', (req, res) => {
     if (!req.session.profile) {
         return res.redirect('/'); // Redirect to login if no profile in session
     }
+    console.log("Serving dashboard...");
     res.sendFile(__dirname + '/public/dashboard.html'); // Serve the dashboard file
-});
-
-// API Route for Fetching Tracks
-app.get('/api/tracks', async (req, res) => {
-    if (!req.session.accessToken) return res.status(401).json({ message: 'Unauthorized' });
-
-    try {
-        const response = await axios.get('https://api.spotify.com/v1/me/top/tracks?limit=10', {
-            headers: {
-                Authorization: `Bearer ${req.session.accessToken}`
-            },
-        });
-
-        const tracks = response.data.items.map((track) => ({
-            name: track.name,
-            artist: track.artists.map((a) => a.name).join(', ')
-        }));
-
-        res.json(tracks);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("Error fetching tracks");
-    }
-});
-
-// Logout Route
-app.get('/logout', (req, res) => {
-    req.logout(() => {
-        req.session.destroy(() => {
-            res.redirect('/');
-        });
-    });
 });
 
 // Root Route
@@ -114,6 +91,7 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html'); // Serve the login page
 });
 
+// Export the app for deployment
 module.exports = (req, res) => {
     app(req, res); // Invoke the express app to handle requests
 };
