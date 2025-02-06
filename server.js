@@ -8,7 +8,7 @@ require('dotenv').config();
 const app = express();
 
 app.use(express.static('public')); // Serve static files from the "public" folder
-app.use(session({ secret: "mysecret", resave: false, saveUninitialized: true, cookie: {maxAge: 30000}}));
+app.use(session({ secret: "mysecret", resave: false, saveUninitialized: true, cookie: {maxAge: 300000, secure: process.env.NODE_ENV === 'production',}}));
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -56,12 +56,15 @@ app.get('/callback', passport.authenticate('spotify', { failureRedirect: '/' }),
         console.error("Error fetching profile: ", error.response ? error.response.data : error.message);
         res.status(500).send('Error fetching profile');
     });
-    res.redirect('/dashboard');
+    // res.redirect('/dashboard');
 });
 
+req.session.profile = response.data; // Store the user profile in the session
 // Dashboard Route
 app.get('/dashboard', (req, res) => {
     if (!req.user) return res.redirect('/');
+    const profile = req.session.profile;
+    // res.render('dashboard', { profile }); // Render a dashboard view with the user profile
     res.sendFile(__dirname + '/public/dashboard.html'); // Serve a dedicated dashboard file
 });
 
@@ -83,6 +86,11 @@ app.get('/api/tracks', async (req, res) => {
         console.error(error);
         res.status(500).send("Error fetching tracks");
     }
+});
+
+app.get('/api/profile', (req, res) => {
+    if (!req.user) return res.status(401).json({ message: 'Profile not found' });
+    res.json(req.user);
 });
 
 //Logout Route
