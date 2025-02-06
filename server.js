@@ -8,14 +8,25 @@ require('dotenv').config();
 const app = express();
 
 app.use(express.static('public')); // Serve static files from the "public" folder
-app.use(session({ secret: "mysecret", resave: false, saveUninitialized: true, cookie: {maxAge: 300000, secure: process.env.NODE_ENV === 'production',}}));
+app.use(session({
+    secret: "mysecret",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 300000, secure: process.env.NODE_ENV === 'production' },
+}));
 
 app.use(passport.initialize());
 app.use(passport.session());
 
 // Serialization & Deserialization
-passport.serializeUser((user, done) => {console.log('serialize user: ', user), done(null, user); });
-passport.deserializeUser((user, done) => {console.log('deserialize user: ', user), done(null, user); });
+passport.serializeUser((user, done) => {
+    console.log('serialize user: ', user);
+    done(null, user);
+});
+passport.deserializeUser((user, done) => {
+    console.log('deserialize user: ', user);
+    done(null, user);
+});
 
 // Spotify Strategy
 passport.use(new SpotifyStrategy({
@@ -42,45 +53,46 @@ app.get("/auth/spotify", passport.authenticate('spotify', {
 app.get('/callback', passport.authenticate('spotify', { failureRedirect: '/' }), (req, res) => {
     req.session.accessToken = req.user.accessToken;
     req.session.refreshToken = req.user.refreshToken;
-    console.log("Received code: ", req.query.code);
-    console.log('Access token: ', req.session.accessToken);
+
+    console.log("Access token: ", req.session.accessToken);
+
     axios.get('https://api.spotify.com/v1/me', {
         headers: { Authorization: `Bearer ${req.session.accessToken}` }
     })
     .then(response => {
-        console.log("User profile: ", response.data);  // Log user profile data
-        // Optionally send the profile data as a response or render it in a view
-        res.send(response.data);  // You can modify this line to redirect to a dashboard or another page
+        req.session.profile = response.data; // Store profile in session
+        res.redirect('/dashboard');  // Redirect to the dashboard after successful authentication
     })
     .catch(error => {
         console.error("Error fetching profile: ", error.response ? error.response.data : error.message);
         res.status(500).send('Error fetching profile');
     });
-    // res.redirect('/dashboard');
 });
 
-req.session.profile = response.data; // Store the user profile in the session
 // Dashboard Route
 app.get('/dashboard', (req, res) => {
-    if (!req.user) return res.redirect('/');
-    const profile = req.session.profile;
-    // res.render('dashboard', { profile }); // Render a dashboard view with the user profile
-    res.sendFile(__dirname + '/public/dashboard.html'); // Serve a dedicated dashboard file
+    if (!req.session.profile) {
+        return res.redirect('/'); // Redirect to login if no profile in session
+    }
+    res.sendFile(__dirname + '/public/dashboard.html'); // Serve the dashboard file
 });
 
 // API Route for Fetching Tracks
 app.get('/api/tracks', async (req, res) => {
-    if (!req.user) return res.status(401).json({ message: 'Unauthorized' });
+    if (!req.session.accessToken) return res.status(401).json({ message: 'Unauthorized' });
+
     try {
         const response = await axios.get('https://api.spotify.com/v1/me/top/tracks?limit=10', {
             headers: {
-                Authorization: `Bearer ${req.user.accessToken}`
+                Authorization: `Bearer ${req.session.accessToken}`
             },
         });
+
         const tracks = response.data.items.map((track) => ({
             name: track.name,
             artist: track.artists.map((a) => a.name).join(', ')
         }));
+
         res.json(tracks);
     } catch (error) {
         console.error(error);
@@ -88,16 +100,13 @@ app.get('/api/tracks', async (req, res) => {
     }
 });
 
-app.get('/api/profile', (req, res) => {
-    if (!req.user) return res.status(401).json({ message: 'Profile not found' });
-    res.json(req.user);
-});
-
-//Logout Route
+// Logout Route
 app.get('/logout', (req, res) => {
-    req.logout(() => req.session.destroy(() => {
-        res.redirect('/');
-    }));
+    req.logout(() => {
+        req.session.destroy(() => {
+            res.redirect('/');
+        });
+    });
 });
 
 // Root Route
@@ -105,7 +114,6 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html'); // Serve the login page
 });
 
-// Vercel Export: Exporting as a function that accepts req and res
 module.exports = (req, res) => {
-    app(req, res); // invoke the express app to handle requests
+    app(req, res); // Invoke the express app to handle requests
 };
