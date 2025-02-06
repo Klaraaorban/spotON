@@ -14,8 +14,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Serialization & Deserialization
-passport.serializeUser((user, done) => { done(null, user); });
-passport.deserializeUser((user, done) => { done(null, user); });
+passport.serializeUser((user, done) => {console.log('serialize user: ', user), done(null, user); });
+passport.deserializeUser((user, done) => {console.log('deserialize user: ', user), done(null, user); });
 
 // Spotify Strategy
 passport.use(new SpotifyStrategy({
@@ -40,6 +40,9 @@ app.get("/auth/spotify", passport.authenticate('spotify', {
 
 // Spotify Callback Route
 app.get('/callback', passport.authenticate('spotify', { failureRedirect: '/' }), (req, res) => {
+    req.session.accessToken = req.user.accessToken;
+    req.session.refreshToken = req.user.refreshToken;
+    
     res.redirect('/dashboard');
 });
 
