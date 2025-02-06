@@ -42,7 +42,8 @@ app.get("/auth/spotify", passport.authenticate('spotify', {
 app.get('/callback', passport.authenticate('spotify', { failureRedirect: '/' }), (req, res) => {
     req.session.accessToken = req.user.accessToken;
     req.session.refreshToken = req.user.refreshToken;
-    
+    console.log("Received code: ", req.query.code);
+    console.log('Access token: ', req.session.accessToken);
     res.redirect('/dashboard');
 });
 
