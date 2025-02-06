@@ -69,6 +69,13 @@ app.get('/api/tracks', async (req, res) => {
     }
 });
 
+//Logout Route
+app.get('/logout', (req, res) => {
+    req.logout(() => req.session.destroy(() => {
+        res.redirect('/');
+    }));
+});
+
 // Root Route
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html'); // Serve the login page
