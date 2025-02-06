@@ -44,6 +44,18 @@ app.get('/callback', passport.authenticate('spotify', { failureRedirect: '/' }),
     req.session.refreshToken = req.user.refreshToken;
     console.log("Received code: ", req.query.code);
     console.log('Access token: ', req.session.accessToken);
+    axios.get('https://api.spotify.com/v1/me', {
+        headers: { Authorization: `Bearer ${req.session.accessToken}` }
+    })
+    .then(response => {
+        console.log("User profile: ", response.data);  // Log user profile data
+        // Optionally send the profile data as a response or render it in a view
+        res.send(response.data);  // You can modify this line to redirect to a dashboard or another page
+    })
+    .catch(error => {
+        console.error("Error fetching profile: ", error.response ? error.response.data : error.message);
+        res.status(500).send('Error fetching profile');
+    });
     res.redirect('/dashboard');
 });
 
