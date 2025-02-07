@@ -47,7 +47,12 @@
             transform: scale(1.05);
         }
 
-        #tracks {
+        #fetch-artists:hover {
+            background-color: #1ed760; /* Brighter green on hover */
+            transform: scale(1.05);
+        }
+
+        #tracks, #artists {
             margin-top: 30px;
             width: 80%;
             max-width: 600px;
@@ -114,6 +119,29 @@
             } catch (error) {
                 console.error(error);
                 document.getElementById('tracks').innerText = 'Error fetching tracks';
+            }
+        });
+        document.getElementById('fetch-artists').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/api/artists');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch artists');
+                }
+                const artists = await response.json();
+                const artistList = document.getElementById('artist-list');
+                artistList.innerHTML = ''; // Clear the list first
+
+                artists.forEach(artist => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<span class="artist-name">${artist.name}</span>`;
+                    artistList.appendChild(li);
+                });
+
+                // Show the artists section
+                document.getElementById('artists').style.display = 'block';
+            } catch (error) {
+                console.error(error);
+                document.getElementById('artists').innerText = 'Error fetching artists';
             }
         });
     </script>
