@@ -155,7 +155,7 @@ app.get('/api/genres', async (req, res) => {
     let refreshToken = req.user.refreshToken;
 
     try {
-        const response = await axios.get('https://api.spotify.com/v1/me/top/artists', {
+        const response = await axios.get('https://api.spotify.com/v1/me/top/artists?limit=50', {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
@@ -165,7 +165,7 @@ app.get('/api/genres', async (req, res) => {
             accessToken = await refreshAccessToken(refreshToken);
 
             // Retry the request with the new access token
-            const retryResponse = await axios.get('https://api.spotify.com/v1/me/top/artists', {
+            const retryResponse = await axios.get('https://api.spotify.com/v1/me/top/artists?limit=50', {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
