@@ -147,16 +147,17 @@ app.get('/api/artists', async (req, res) => {
 
 
 //get top genres
+// Get top genres
 app.get('/api/genres', async (req, res) => {
     if (!req.user) return res.status(401).json({ message: 'Unauthorized' });
-    
-    let access_token = req.user.accessToken;
-    let refresh_token = req.user.refreshToken;
-    
+
+    let accessToken = req.user.accessToken;
+    let refreshToken = req.user.refreshToken;
+
     try {
-        const response = await axios.get('https://api.spotify.com/v1/me/top/genres?limit=10', {
+        const response = await axios.get('https://api.spotify.com/v1/me/top/artists', {
             headers: {
-                Authorization: `Bearer ${req.user.accessToken}`
+                Authorization: `Bearer ${accessToken}`,
             },
         });
 
@@ -164,21 +165,27 @@ app.get('/api/genres', async (req, res) => {
             accessToken = await refreshAccessToken(refreshToken);
 
             // Retry the request with the new access token
-            const retryResponse = await axios.get('https://api.spotify.com/v1/me/top/genres?limit=10', {
+            const retryResponse = await axios.get('https://api.spotify.com/v1/me/top/artists', {
                 headers: {
-                    Authorization: `Bearer ${accessToken}`
+                    Authorization: `Bearer ${accessToken}`,
                 },
             });
 
-            const genres = retryResponse.data.items.map((artist) => artist.genres).flat();
+            // Flatten genres from the top artists
+            const genres = retryResponse.data.items
+                .flatMap((artist) => artist.genres)
+                .filter((genre, index, self) => genre && self.indexOf(genre) === index); // Remove duplicates
             return res.json(genres);
         }
-        
-        const genres = response.data.items.map((artist) => artist.genres).flat();
+
+        // Flatten genres from the top artists
+        const genres = response.data.items
+            .flatMap((artist) => artist.genres)
+            .filter((genre, index, self) => genre && self.indexOf(genre) === index); // Remove duplicates
         res.json(genres);
     } catch (error) {
         console.error(error);
-        res.status(500).send("Error fetching genres");
+        res.status(500).send('Error fetching genres');
     }
 });
 
