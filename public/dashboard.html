@@ -18,10 +18,11 @@
             color: #FFFFFF;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             text-align: center;
+            padding: 20px;
+            overflow-y: auto;
         }
 
         h1 {
@@ -30,7 +31,7 @@
             margin-bottom: 20px;
         }
 
-        #fetch-tracks, #fetch-artists {
+        button {
             font-size: 1.2rem;
             padding: 15px 30px;
             background-color: #1DB954; /* Spotify Green */
@@ -40,30 +41,24 @@
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.2s ease;
             margin: 10px 0;
-            display: block;
             width: 250px;
             text-align: center;
         }
 
-        #fetch-tracks:hover {
+        button:hover {
             background-color: #1ed760; /* Brighter green on hover */
             transform: scale(1.05);
         }
 
-        #fetch-artists:hover {
-            background-color: #1ed760; /* Brighter green on hover */
-            transform: scale(1.05);
-        }
-
-        #tracks, #artists {
-            margin-top: 30px;
+        .dropdown {
+            margin-top: 20px;
             width: 80%;
             max-width: 600px;
             background-color: #282828; /* Slightly lighter dark for contrast */
             border-radius: 12px;
             padding: 20px;
             box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.5);
-            display: none; /* Hide until tracks are shown */
+            display: none; /* Initially hidden */
         }
 
         ul {
@@ -89,65 +84,62 @@
 </head>
 <body>
     <h1>Your Spotify Dashboard</h1>
+
     <button id="fetch-tracks">Show My Tracks</button>
-    <div id="tracks">
-        <h2>Your Top10 Tracks</h2>
+    <div id="tracks" class="dropdown">
+        <h2>Your Top 10 Tracks</h2>
         <ul id="track-list"></ul>
     </div>
+
     <button id="fetch-artists">Show My Artists</button>
-    <div id="artists">
-        <h2>Your Top10 Artists</h2>
+    <div id="artists" class="dropdown">
+        <h2>Your Top 10 Artists</h2>
         <ul id="artist-list"></ul>
     </div>
 
     <script>
-        document.getElementById('fetch-tracks').addEventListener('click', async () => {
-            try {
-                const response = await fetch('/api/tracks');
-                if (!response.ok) {
-                    throw new Error('Failed to fetch tracks');
+        const toggleSection = (buttonId, sectionId, fetchUrl, listId, formatter) => {
+            const button = document.getElementById(buttonId);
+            const section = document.getElementById(sectionId);
+
+            button.addEventListener('click', async () => {
+                if (section.style.display === 'block') {
+                    section.style.display = 'none'; // Close the dropdown if already open
+                } else {
+                    try {
+                        // Fetch and populate data
+                        const response = await fetch(fetchUrl);
+                        if (!response.ok) {
+                            throw new Error(`Failed to fetch data from ${fetchUrl}`);
+                        }
+                        const data = await response.json();
+                        const list = document.getElementById(listId);
+                        list.innerHTML = ''; // Clear previous content
+
+                        data.forEach(item => {
+                            const li = document.createElement('li');
+                            li.innerHTML = formatter(item);
+                            list.appendChild(li);
+                        });
+
+                        // Show the section
+                        section.style.display = 'block';
+                    } catch (error) {
+                        console.error(error);
+                        section.innerHTML = `<p>Error fetching data</p>`;
+                    }
                 }
-                const tracks = await response.json();
-                const trackList = document.getElementById('track-list');
-                trackList.innerHTML = ''; // Clear the list first
+            });
+        };
 
-                tracks.forEach(track => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `<span class="track-name">${track.name}</span> by <span class="artist-name">${track.artist}</span>`;
-                    trackList.appendChild(li);
-                });
-
-                // Show the tracks section
-                document.getElementById('tracks').style.display = 'block';
-            } catch (error) {
-                console.error(error);
-                document.getElementById('tracks').innerText = 'Error fetching tracks';
-            }
+        // Define fetch logic for tracks and artists
+        toggleSection('fetch-tracks', 'tracks', '/api/tracks', 'track-list', track => {
+            return `<span class="track-name">${track.name}</span> by <span class="artist-name">${track.artist}</span>`;
         });
-        document.getElementById('fetch-artists').addEventListener('click', async () => {
-            try {
-                const response = await fetch('/api/artists');
-                if (!response.ok) {
-                    throw new Error('Failed to fetch artists');
-                }
-                const artists = await response.json();
-                const artistList = document.getElementById('artist-list');
-                artistList.innerHTML = ''; // Clear the list first
 
-                artists.forEach(artist => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `<span class="artist-name">${artist.name}</span>`;
-                    artistList.appendChild(li);
-                });
-
-                // Show the artists section
-                document.getElementById('artists').style.display = 'block';
-            } catch (error) {
-                console.error(error);
-                document.getElementById('artists').innerText = 'Error fetching artists';
-            }
+        toggleSection('fetch-artists', 'artists', '/api/artists', 'artist-list', artist => {
+            return `<span class="artist-name">${artist.name}</span>`;
         });
     </script>
 </body>
 </html>
-
