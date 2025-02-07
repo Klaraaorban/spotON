@@ -49,15 +49,48 @@ app.get('/dashboard', (req, res) => {
     res.sendFile(__dirname + '/public/dashboard.html'); // Serve a dedicated dashboard file
 });
 
+async function refreshAccessToken(refreshToken) {
+    const response = await axios.post('https://accounts.spotify.com/api/token', new URLSearchParams({
+        grant_type: 'refresh_token',
+        refresh_token: refreshToken,
+        client_id: process.env.SPOTIFY_CLIENT_ID,
+        client_secret: process.env.SPOTIFY_CLIENT_SECRET,
+    }));
+    return response.data.access_token;
+}
+
+
 // API Route for Fetching Tracks
 app.get('/api/tracks', async (req, res) => {
     if (!req.user) return res.status(401).json({ message: 'Unauthorized' });
+    
+    let access_token = req.user.accessToken;
+    let refresh_token = req.user.refreshToken;
+    
     try {
         const response = await axios.get('https://api.spotify.com/v1/me/top/tracks?limit=10', {
             headers: {
                 Authorization: `Bearer ${req.user.accessToken}`
             },
         });
+
+        if (response.status === 401) {
+            accessToken = await refreshAccessToken(refreshToken);
+
+            // Retry the request with the new access token
+            const retryResponse = await axios.get('https://api.spotify.com/v1/me/top/tracks?limit=10', {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                },
+            });
+
+            const tracks = retryResponse.data.items.map((track) => ({
+                name: track.name,
+                artist: track.artists.map((a) => a.name).join(', ')
+            }));
+            return res.json(tracks);
+        }
+        
         const tracks = response.data.items.map((track) => ({
             name: track.name,
             artist: track.artists.map((a) => a.name).join(', ')
