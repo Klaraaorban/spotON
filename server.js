@@ -6,7 +6,11 @@ const session = require('express-session');
 require('dotenv').config();
 
 const app = express();
+<<<<<<< HEAD
 
+=======
+//old version of vercel routes pushing
+>>>>>>> 6f241f1 (vercel routes2)
 app.use(express.static('public')); // Serve static files from the "public" folder
 app.use(session({
     secret: "mysecret",
