@@ -145,6 +145,43 @@ app.get('/api/artists', async (req, res) => {
     }
 });
 
+
+//get top genres
+app.get('/api/genres', async (req, res) => {
+    if (!req.user) return res.status(401).json({ message: 'Unauthorized' });
+    
+    let access_token = req.user.accessToken;
+    let refresh_token = req.user.refreshToken;
+    
+    try {
+        const response = await axios.get('https://api.spotify.com/v1/me/top/genres?limit=10', {
+            headers: {
+                Authorization: `Bearer ${req.user.accessToken}`
+            },
+        });
+
+        if (response.status === 401) {
+            accessToken = await refreshAccessToken(refreshToken);
+
+            // Retry the request with the new access token
+            const retryResponse = await axios.get('https://api.spotify.com/v1/me/top/genres?limit=10', {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                },
+            });
+
+            const genres = retryResponse.data.items.map((artist) => artist.genres).flat();
+            return res.json(genres);
+        }
+        
+        const genres = response.data.items.map((artist) => artist.genres).flat();
+        res.json(genres);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error fetching genres");
+    }
+});
+
 // Root Route
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html'); // Serve the login page
