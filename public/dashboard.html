@@ -101,11 +101,11 @@
         <ul id="artist-list"></ul>
     </div>
 
-    <button id="fetch-genres">Show My Genres</button>
+    <!-- <button id="fetch-genres">Show My Genres</button>
     <div id="genres" class="dropdown">
         <h2>Your Top 10 Genres</h2>
         <ul id="genre-list"></ul>
-    </div>
+    </div> -->
 
     <script>
         const toggleSection = (buttonId, sectionId, fetchUrl, listId, formatter) => {
@@ -151,9 +151,9 @@
             return `<span class="artist-name">${artist.name}</span>`;
         });
 
-        toggleSection('fetch-genres', 'genres', '/api/genres', 'genre-list', genre => {
-            return `<span class="genre-name">${genre.name}</span>`;
-        });
+        // toggleSection('fetch-genres', 'genres', '/api/genres', 'genre-list', genre => {
+        //     return `<span class="genre-name">${genre.name}</span>`;
+        // });
     </script>
 </body>
 </html>
