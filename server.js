@@ -102,6 +102,49 @@ app.get('/api/tracks', async (req, res) => {
     }
 });
 
+
+//get top artists
+app.get('/api/artists', async (req, res) => {
+    if (!req.user) return res.status(401).json({ message: 'Unauthorized' });
+    
+    let access_token = req.user.accessToken;
+    let refresh_token = req.user.refreshToken;
+    
+    try {
+        const response = await axios.get('https://api.spotify.com/v1/me/top/artists?limit=10', {
+            headers: {
+                Authorization: `Bearer ${req.user.accessToken}`
+            },
+        });
+
+        if (response.status === 401) {
+            accessToken = await refreshAccessToken(refreshToken);
+
+            // Retry the request with the new access token
+            const retryResponse = await axios.get('https://api.spotify.com/v1/me/top/artists?limit=10', {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                },
+            });
+
+            const artists = retryResponse.data.items.map((artist) => ({
+                name: artist.name,
+                genre: artist.genres.join(', ')
+            }));
+            return res.json(artists);
+        }
+        
+        const artists = response.data.items.map((artist) => ({
+            name: artist.name,
+            genre: artist.genres.join(', ')
+        }));
+        res.json(artists);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error fetching artists");
+    }
+});
+
 // Root Route
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html'); // Serve the login page
