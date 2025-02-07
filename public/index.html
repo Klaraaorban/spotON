@@ -64,5 +64,21 @@
         <h1>Welcome to Spotify App</h1>
         <a href="/auth/spotify">Log in with Spotify</a>
     </div>
+
+    <script>
+        // Check if the user is already logged in
+        if (localStorage.getItem('isLoggedIn')) {
+            // Redirect to dashboard if already logged in
+            window.location.href = '/dashboard';
+        }
+
+        // Set up the login button
+        const loginBtn = document.getElementById('login-btn');
+        loginBtn.addEventListener('click', () => {
+            // Clear localStorage login state before starting a new login
+            localStorage.removeItem('isLoggedIn');
+        });
+    </script>
+    
 </body>
 </html>

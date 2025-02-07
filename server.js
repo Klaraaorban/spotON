@@ -57,13 +57,20 @@ app.get("/auth/spotify", passport.authenticate('spotify', {
 
 // Spotify Callback Route
 app.get('/callback', passport.authenticate('spotify', { failureRedirect: '/' }), (req, res) => {
+    // If session already contains an access token, skip the process
+    if (req.session.accessToken) {
+        console.log("Session already authenticated. Redirecting to dashboard...");
+        return res.redirect('/dashboard');
+    }
+
     console.log("Callback route reached!");
     req.session.accessToken = req.user.accessToken;
     req.session.refreshToken = req.user.refreshToken;
 
     console.log("Access token: ", req.session.accessToken);
 
-    axios.get('https://api.spotify.com/v1/me', {
+    // Fetch user profile
+    axios.get('https://api.spotify.com/v1/me/top/tracks?limit=10', {
         headers: { Authorization: `Bearer ${req.session.accessToken}` }
     })
     .then(response => {
@@ -76,6 +83,7 @@ app.get('/callback', passport.authenticate('spotify', { failureRedirect: '/' }),
         res.status(500).send('Error fetching profile');
     });
 });
+
 
 // Dashboard Route
 app.get('/dashboard', (req, res) => {
