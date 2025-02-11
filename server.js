@@ -13,7 +13,6 @@ app.use(session({ secret: "mysecret", resave: false, saveUninitialized: true, co
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Serialization & Deserialization
 passport.serializeUser((user, done) => { done(null, user); });
 passport.deserializeUser((user, done) => { done(null, user); });
 
@@ -46,7 +45,7 @@ app.get('/callback', passport.authenticate('spotify', { failureRedirect: '/' }),
 // Dashboard Route
 app.get('/dashboard', (req, res) => {
     if (!req.user) return res.redirect('/');
-    res.sendFile(__dirname + '/public/dashboard.html'); // Serve a dedicated dashboard file
+    res.sendFile(__dirname + '/public/dashboard.html'); 
 });
 
 async function refreshAccessToken(refreshToken) {
@@ -60,7 +59,7 @@ async function refreshAccessToken(refreshToken) {
 }
 
 
-// API Route for Fetching Tracks
+// API Route for fetching tracks
 app.get('/api/tracks', async (req, res) => {
     if (!req.user) return res.status(401).json({ message: 'Unauthorized' });
     
@@ -77,7 +76,6 @@ app.get('/api/tracks', async (req, res) => {
         if (response.status === 401) {
             accessToken = await refreshAccessToken(refreshToken);
 
-            // Retry the request with the new access token
             const retryResponse = await axios.get('https://api.spotify.com/v1/me/top/tracks?limit=10', {
                 headers: {
                     Authorization: `Bearer ${accessToken}`
@@ -120,7 +118,6 @@ app.get('/api/artists', async (req, res) => {
         if (response.status === 401) {
             accessToken = await refreshAccessToken(refreshToken);
 
-            // Retry the request with the new access token
             const retryResponse = await axios.get('https://api.spotify.com/v1/me/top/artists?limit=10', {
                 headers: {
                     Authorization: `Bearer ${accessToken}`
@@ -190,10 +187,10 @@ app.get('/api/artists', async (req, res) => {
 
 // Root Route
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/public/index.html'); // Serve the login page
+    res.sendFile(__dirname + '/public/index.html');
 });
 
-// Adjusting Export for Vercel's serverless function environment
+// export for Vercel serverless function environment
 module.exports = (req, res) => {
-    app(req, res); // Invoke the express app to handle requests in serverless context
+    app(req, res); 
 };

@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spotify Dashboard</title>
     <style>
-        /* General Reset */
         * {
             margin: 0;
             padding: 0;
@@ -14,7 +13,7 @@
 
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #191414; /* Spotify's dark theme */
+            background-color: #191414; 
             color: #FFFFFF;
             display: flex;
             flex-direction: column;
@@ -27,14 +26,14 @@
 
         h1 {
             font-size: 3rem;
-            color: #1DB954; /* Spotify Green */
+            color: #1DB954; 
             margin-bottom: 20px;
         }
 
         button {
             font-size: 1.2rem;
             padding: 15px 30px;
-            background-color: #1DB954; /* Spotify Green */
+            background-color: #1DB954; 
             color: #FFFFFF;
             border: none;
             border-radius: 30px;
@@ -46,7 +45,7 @@
         }
 
         button:hover {
-            background-color: #1ed760; /* Brighter green on hover */
+            background-color: #1ed760; 
             transform: scale(1.05);
         }
 
@@ -54,11 +53,11 @@
             margin-top: 20px;
             width: 80%;
             max-width: 600px;
-            background-color: #282828; /* Slightly lighter dark for contrast */
+            background-color: #282828; 
             border-radius: 12px;
             padding: 20px;
             box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.5);
-            display: none; /* Initially hidden */
+            display: none; 
         }
 
         ul {
@@ -69,20 +68,20 @@
         li {
             font-size: 1.2rem;
             margin: 10px 0;
-            color: #B3B3B3; /* Spotify light gray */
+            color: #B3B3B3; 
             font-weight: bold;
         }
 
         .track-name {
-            color: #FFFFFF; /* White for track names */
+            color: #FFFFFF; 
         }
 
         .artist-name {
-            color: #FFFFFF; /* Lighter gray for artists */
+            color: #FFFFFF; 
         }
 
         .genre-name {
-            color: #FFFFFF; /* White for genres */
+            color: #FFFFFF; 
         }
     </style>
 </head>
@@ -114,7 +113,7 @@
 
             button.addEventListener('click', async () => {
                 if (section.style.display === 'block') {
-                    section.style.display = 'none'; // Close the dropdown if already open
+                    section.style.display = 'none';
                 } else {
                     try {
                         // Fetch and populate data
@@ -124,7 +123,7 @@
                         }
                         const data = await response.json();
                         const list = document.getElementById(listId);
-                        list.innerHTML = ''; // Clear previous content
+                        list.innerHTML = ''; 
 
                         data.forEach(item => {
                             const li = document.createElement('li');
@@ -132,7 +131,6 @@
                             list.appendChild(li);
                         });
 
-                        // Show the section
                         section.style.display = 'block';
                     } catch (error) {
                         console.error(error);
