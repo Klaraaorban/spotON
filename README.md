@@ -1,5 +1,11 @@
 # 🎵 SpotON  
 
+**Important**
+
+_This is a functioning site which can only be used after contacting me because of Spotify's privacy security adaptation on DEMO versions of API's.
+The project is still being built and Spotify will have to verify the code before it is available to everyone.
+Until then: contact ME so you I can add you to the "tester" group._
+
 SpotON is a web application where you can log in with your Spotify account and explore your favorite tracks, top artists, and more...upcoming!  
 This project is based on Spoitfy security, which is obtained by SpotifyDevelover. Currently in testing phase!
 The site has its own domain and backup server.
