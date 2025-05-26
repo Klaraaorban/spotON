@@ -164,38 +164,36 @@
         // toggleSection('fetch-genres', 'genres', '/api/genres', 'genre-list', genre => {
         //     return `<span class="genre-name">${genre.name}</span>`;
         // });
+        // Now Playing Bar
         async function updateNowPlaying() {
-        try {
-            const response = await fetch('/api/now-playing');
-            if (!response.ok) throw new Error('Failed to fetch now playing');
-
-            const data = await response.json();
-
-            if (data && data.item) {
-                const track = data.item;
-                const artists = track.artists.map(artist => artist.name).join(', ');
-                const albumArt = track.album.images[0]?.url || '';
-
-                document.getElementById('now-playing-album-art').src = albumArt;
-                document.getElementById('now-playing-track').textContent = track.name;
-                document.getElementById('now-playing-artist').textContent = artists;
-            } else {
-                // No track playing
-                document.getElementById('now-playing-album-art').src = '';
-                document.getElementById('now-playing-track').textContent = 'Not Playing';
-                document.getElementById('now-playing-artist').textContent = '';
-            }
-        } catch (error) {
-            console.error(error);
-            document.getElementById('now-playing-track').textContent = 'Error loading now playing';
-            document.getElementById('now-playing-artist').textContent = '';
-            document.getElementById('now-playing-album-art').src = '';
+    try {
+        const response = await fetch('/api/now-playing');
+        if (!response.ok) throw new Error('Fetch failed');
+        const data = await response.json();
+        if (!data || !data.item || !data.is_playing) {
+            displayNoMusic();
+            return;
         }
+        const track = data.item;
+        const artists = track.artists.map(artist => artist.name).join(', ');
+        const albumArt = track.album.images[0]?.url || '';
+        document.getElementById('now-playing-album-art').src = albumArt;
+        document.getElementById('now-playing-track').textContent = track.name;
+        document.getElementById('now-playing-artist').textContent = artists;
+    } catch (error) {
+        displayNoMusic();
     }
+}
 
-    // Initial fetch and update every 15 seconds
-    updateNowPlaying();
-    setInterval(updateNowPlaying, 15000);
+function displayNoMusic() {
+    document.getElementById('now-playing-album-art').src = '';
+    document.getElementById('now-playing-track').textContent = 'No music playing';
+    document.getElementById('now-playing-artist').textContent = '';
+}
+
+updateNowPlaying();
+setInterval(updateNowPlaying, 15000);
+
     </script>
 </body>
 </html>

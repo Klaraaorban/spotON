@@ -141,6 +141,52 @@ app.get('/api/artists', async (req, res) => {
         res.status(500).send("Error fetching artists");
     }
 });
+// API Route for feetching currently playing track
+app.get('/api/now-playing', async (req, res) => {
+    if (!req.user) return res.status(401).json({ message: 'Unauthorized' });
+
+    let access_token = req.user.accessToken;
+    let refresh_token = req.user.refreshToken;
+
+    try {
+        const response = await axios.get('https://api.spotify.com/v1/me/player/currently-playing', {
+            headers: {
+                Authorization: `Bearer ${access_token}`,
+            },
+        });
+
+        if (response.status === 204 || !response.data) {
+            return res.json({ is_playing: false, item: null });
+        }
+
+        return res.json(response.data);
+
+    } catch (error) {
+        if (error.response && error.response.status === 401) {
+            try {
+                access_token = await refreshAccessToken(refresh_token);
+
+                const retryResponse = await axios.get('https://api.spotify.com/v1/me/player/currently-playing', {
+                    headers: {
+                        Authorization: `Bearer ${access_token}`,
+                    },
+                });
+
+                if (retryResponse.status === 204 || !retryResponse.data) {
+                    return res.json({ is_playing: false, item: null });
+                }
+
+                return res.json(retryResponse.data);
+
+            } catch (refreshError) {
+                return res.status(500).json({ error: 'Unable to refresh access token or fetch playback' });
+            }
+        }
+
+        return res.status(500).json({ error: 'Failed to fetch now playing' });
+    }
+});
+
 
 
 //get top genres
@@ -194,3 +240,4 @@ app.get('/', (req, res) => {
 module.exports = (req, res) => {
     app(req, res); 
 };
+
