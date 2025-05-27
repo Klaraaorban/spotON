@@ -245,15 +245,15 @@
         //     return `<span class="track-name">${track.name}</span> by <span class="artist-name">${track.artist}</span>`;
         // });
 
-        toggleMenuSection('menu-top-tracks', 'tracks', '/api/tracks', 'track-list', track => 
+        toggleSection('menu-top-tracks', 'tracks', '/api/tracks', 'track-list', track => 
             `<span class="track-name">${track.name}</span> by <span class="artist-name">${track.artist}</span>`
             );
 
-            toggleMenuSection('menu-top-artists', 'artists', '/api/artists', 'artist-list', artist => 
+            toggleSection('menu-top-artists', 'artists', '/api/artists', 'artist-list', artist => 
             `<span class="artist-name">${artist.name}</span>`
             );
 
-            toggleMenuSection('menu-now-playing', 'top-tracks', '/api/top-tracks', 'top-tracks-list', track => 
+            toggleSection('menu-now-playing', 'top-tracks', '/api/top-tracks', 'top-tracks-list', track => 
             `<span class="track-name">${track.name}</span> by <span class="artist-name">${track.artist}</span>`
             );
 
