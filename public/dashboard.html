@@ -158,6 +158,12 @@
         <ul id="top-tracks-list"></ul>
     </div>
 
+    <div id="recently-played" class="dropdown" style="display:none;">
+    <h2>Your Recently Played Tracks</h2>
+    <ul id="recently-played-list"></ul>
+    </div>
+
+
     <!-- Now playing music -->
     <div id="now-playing-box" style="position: fixed; bottom: 20px; right: 20px; width: 320px; background-color: #282828; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.7); display: flex; padding: 12px; align-items: center; font-family: 'Arial', sans-serif; color: white; cursor: default; user-select: none; z-index: 1000; overflow: hidden;">
   <div id="blurred-bg" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; filter: blur(20px); opacity: 0.15; background-position: center; background-size: cover; z-index: 0; border-radius: 12px; transition: background-image 0.5s ease;"></div>
@@ -175,6 +181,7 @@
     <a href="#" id="menu-top-tracks">Top Tracks</a>
     <a href="#" id="menu-top-artists">Top Artists</a>
     <a href="#" id="menu-life-top-tracks">Life Top Tracks</a>
+    <a href="#" id="menu-recently-played">Recently Played</a>
   </div>
 </div>
 
@@ -255,6 +262,12 @@
         toggleSection('menu-life-top-tracks', 'top-tracks', '/api/top-tracks', 'top-tracks-list', track => {
             return `<span class="track-name">${track.name}</span> by <span class="artist-name">${track.artist}</span>`;
         });
+        toggleSection('menu-recently-played', 'recently-played', '/api/recently-played', 'recently-played-list', track => {
+        const playedTime = new Date(track.playedAt).toLocaleString();
+        return `<span class="track-name">${track.name}</span> by <span class="artist-name">${track.artist}</span> <br>
+                <small style="color:#888;">Played at: ${playedTime}</small>`;
+        });
+
 
         // Now Playing Bar
         async function updateNowPlaying() {
@@ -342,3 +355,7 @@ setInterval(updateNowPlaying, 15000);
   </script>
 </body>
 </html>
+
+<!-- recently played
+ playlists
+  -->

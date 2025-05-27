@@ -229,6 +229,36 @@ app.get('/api/top-tracks', async (req, res) => {
     }
 });
 
+app.get('/api/recently-played', async (req, res) => {
+  if (!req.user) return res.status(401).json({ message: 'Unauthorized' });
+
+  const accessToken = req.user.accessToken;
+
+  try {
+    const response = await axios.get('https://api.spotify.com/v1/me/player/recently-played', {
+      headers: { Authorization: `Bearer ${accessToken}` },
+      params: { limit: 10 }  // last 10 played tracks
+    });
+
+    const tracks = response.data.items.map(item => {
+      const track = item.track;
+      return {
+        name: track.name,
+        artist: track.artists.map(a => a.name).join(', '),
+        album: track.album.name,
+        image: track.album.images[0]?.url,
+        playedAt: item.played_at
+      };
+    });
+
+    res.json(tracks);
+  } catch (err) {
+    console.error(err.response?.data || err);
+    res.status(500).send('Failed to fetch recently played tracks');
+  }
+});
+
+
 // Root Route
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
