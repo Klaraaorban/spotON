@@ -102,10 +102,10 @@
         <ul id="artist-list"></ul>
     </div>
 
-    <button id="fetch-soundtrack">Show Soundtrack of Your Life</button>
-    <div id="soundtrack" class="dropdown">
-        <h2>Your Soundtrack</h2>
-        <ul id="soundtrack-list"></ul>
+    <button id="fetch-top-tracks">Show Soundtrack of Your Life</button>
+    <div id="top-tracks" class="dropdown">
+        <h2>Your Top Tracks</h2>
+        <ul id="top-tracks-list"></ul>
     </div>
 
     <!-- Now playing music -->
@@ -176,9 +176,10 @@
             return `<span class="artist-name">${artist.name}</span>`;
         });
 
-        toggleSection('fetch-soundtrack', 'soundtrack', '/api/soundtrack', 'soundtrack-list', item => {
-            return `<li><span class="track-name">${item.name}</span> by <span class="artist-name">${item.artist}</span> (${item.album})</li>`;
+        toggleSection('fetch-top-tracks', 'top-tracks', '/api/top-tracks', 'top-tracks-list', track => {
+            return `<span class="track-name">${track.name}</span> by <span class="artist-name">${track.artist}</span> from the album <span class="album-name">${track.album}</span>`;
         });
+
 
         // Now Playing Bar
         async function updateNowPlaying() {
@@ -216,27 +217,27 @@ function displayNoMusic() {
 updateNowPlaying();
 setInterval(updateNowPlaying, 15000);
 
-    // Fetch top tracks for a time range
-    app.get('/api/top-tracks/:range', async (req, res) => {
+    // Fetch top tracks of all time
+    app.get('/api/top-tracks', async (req, res) => {
     if (!req.user) return res.status(401).json({ message: 'Unauthorized' });
 
     const accessToken = req.user.accessToken;
-    const timeRange = req.params.range; // 'short_term', 'medium_term', 'long_term'
+    const timeRange = 'long_term'; // Always long-term
 
     try {
-        const response = await axios.get(`https://api.spotify.com/v1/me/top/tracks`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-        params: {
-            time_range: timeRange,
-            limit: 10
-        }
+        const response = await axios.get('https://api.spotify.com/v1/me/top/tracks', {
+            headers: { Authorization: `Bearer ${accessToken}` },
+            params: {
+                time_range: timeRange,
+                limit: 10
+            }
         });
 
         const tracks = response.data.items.map(track => ({
-        name: track.name,
-        artist: track.artists.map(a => a.name).join(', '),
-        album: track.album.name,
-        image: track.album.images[0]?.url
+            name: track.name,
+            artist: track.artists.map(a => a.name).join(', '),
+            album: track.album.name,
+            image: track.album.images[0]?.url
         }));
 
         res.json(tracks);
@@ -244,7 +245,8 @@ setInterval(updateNowPlaying, 15000);
         console.error(err.response?.data || err);
         res.status(500).send('Failed to fetch top tracks');
     }
-    });
+});
+
 
     </script>
 </body>
