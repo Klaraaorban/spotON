@@ -257,7 +257,35 @@ app.get('/api/recently-played', async (req, res) => {
     res.status(500).send('Failed to fetch recently played tracks');
   }
 });
+      // Fetch top tracks of all time
+    app.get('/api/top-tracks', async (req, res) => {
+    if (!req.user) return res.status(401).json({ message: 'Unauthorized' });
 
+    const accessToken = req.user.accessToken;
+    const timeRange = 'long_term'; // Always long-term
+
+    try {
+        const response = await axios.get('https://api.spotify.com/v1/me/top/tracks', {
+            headers: { Authorization: `Bearer ${accessToken}` },
+            params: {
+                time_range: timeRange,
+                limit: 10
+            }
+        });
+
+        const tracks = response.data.items.map(track => ({
+            name: track.name,
+            artist: track.artists.map(a => a.name).join(', '),
+            album: track.album.name,
+            image: track.album.images[0]?.url
+        }));
+
+        res.json(tracks);
+    } catch (err) {
+        console.error(err.response?.data || err);
+        res.status(500).send('Failed to fetch top tracks');
+    }
+});
 
 // Root Route
 app.get('/', (req, res) => {
