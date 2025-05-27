@@ -172,9 +172,9 @@
     <div class="menu-container">
   <button id="menu-button" class="menu-button" aria-label="Menu">☰</button>
   <div id="menu" class="menu hidden">
-    <a href="#" id="menu-top-tracks">🎵 Top Tracks</a>
-    <a href="#" id="menu-top-artists">🌟 Top Artists</a>
-    <a href="#" id="menu-now-playing">▶️ Now Playing</a>
+    <a href="#" id="menu-top-tracks">Top Tracks</a>
+    <a href="#" id="menu-top-artists">Top Artists</a>
+    <a href="#" id="menu-life-top-tracks">Life Top Tracks</a>
   </div>
 </div>
 
@@ -252,10 +252,9 @@
             toggleSection('menu-top-artists', 'artists', '/api/artists', 'artist-list', artist => 
             `<span class="artist-name">${artist.name}</span>`
             );
-
-            toggleSection('menu-now-playing', 'top-tracks', '/api/top-tracks', 'top-tracks-list', track => 
-            `<span class="track-name">${track.name}</span> by <span class="artist-name">${track.artist}</span>`
-            );
+        toggleSection('menu-life-top-tracks', 'top-tracks', '/api/top-tracks', 'top-tracks-list', track => {
+            return `<span class="track-name">${track.name}</span> by <span class="artist-name">${track.artist}</span>`;
+        });
 
         // Now Playing Bar
         async function updateNowPlaying() {
