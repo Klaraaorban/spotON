@@ -102,7 +102,7 @@
         <ul id="artist-list"></ul>
     </div>
 
-    <button id="fetch-top-tracks">Show Soundtrack of Your Life</button>
+    <button id="fetch-top-tracks">Life Top Track</button>
     <div id="top-tracks" class="dropdown">
         <h2>Your Top Tracks</h2>
         <ul id="top-tracks-list"></ul>
@@ -118,6 +118,11 @@
     <div id="now-playing-album" style="font-size: 0.85rem; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 240px; margin-top: 4px; font-style: italic;"></div>
   </div>
 </div>
+
+    <input type="text" id="artist-input" placeholder="Enter artist name" />
+    <button id="show-dna">Show Artist DNA</button>
+    <svg id="artist-dna" width="800" height="600"></svg>
+
 
     <style>
         @keyframes spin {
@@ -176,10 +181,14 @@
             return `<span class="artist-name">${artist.name}</span>`;
         });
 
-        toggleSection('fetch-top-tracks', 'top-tracks', '/api/top-tracks', 'top-tracks-list', track => {
-            return `<span class="track-name">${track.name}</span> by <span class="artist-name">${track.artist}</span> from the album <span class="album-name">${track.album}</span>`;
-        });
+        // toggleSection('fetch-top-tracks', 'top-tracks', '/api/top-tracks', 'top-tracks-list', track => {
+        //     return `<span class="track-name">${track.name}</span> by <span class="artist-name">${track.artist}</span> from the album <span class="album-name">${track.album}</span>`;
+        // });
 
+
+        toggleSection('fetch-top-tracks', 'top-tracks', '/api/top-tracks', 'top-tracks-list', track => {
+            return `<span class="track-name">${track.name}</span> by <span class="artist-name">${track.artist}</span>`;
+        });
 
         // Now Playing Bar
         async function updateNowPlaying() {
@@ -249,5 +258,92 @@ setInterval(updateNowPlaying, 15000);
 
 
     </script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+document.getElementById('show-dna').addEventListener('click', async () => {
+    const name = document.getElementById('artist-input').value;
+    if (!name) return;
+
+    const res = await fetch(`/api/related-artists?name=${encodeURIComponent(name)}`);
+    const data = await res.json();
+    
+    const nodes = [{ id: data.root, group: 0 }, ...data.related.map(a => ({ id: a.name, group: 1 }))];
+    const links = data.related.map(a => ({ source: data.root, target: a.name }));
+
+    const svg = d3.select("#artist-dna");
+    svg.selectAll("*").remove(); // Clear previous
+
+    const width = +svg.attr("width");
+    const height = +svg.attr("height");
+
+    const simulation = d3.forceSimulation(nodes)
+        .force("link", d3.forceLink(links).id(d => d.id).distance(150))
+        .force("charge", d3.forceManyBody().strength(-300))
+        .force("center", d3.forceCenter(width / 2, height / 2));
+
+    const link = svg.append("g")
+        .attr("stroke", "#999")
+        .attr("stroke-opacity", 0.6)
+        .selectAll("line")
+        .data(links)
+        .join("line")
+        .attr("stroke-width", 1.5);
+
+    const node = svg.append("g")
+        .attr("stroke", "#fff")
+        .attr("stroke-width", 1.5)
+        .selectAll("circle")
+        .data(nodes)
+        .join("circle")
+        .attr("r", 10)
+        .attr("fill", d => d.group === 0 ? "#1DB954" : "#888")
+        .call(drag(simulation));
+
+    const label = svg.append("g")
+        .selectAll("text")
+        .data(nodes)
+        .join("text")
+        .text(d => d.id)
+        .attr("x", 15)
+        .attr("y", ".31em")
+        .style("fill", "#fff")
+        .style("font-size", "12px");
+
+    simulation.on("tick", () => {
+        link
+            .attr("x1", d => d.source.x)
+            .attr("y1", d => d.source.y)
+            .attr("x2", d => d.target.x)
+            .attr("y2", d => d.target.y);
+
+        node
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y);
+
+        label
+            .attr("x", d => d.x + 12)
+            .attr("y", d => d.y);
+    });
+
+    function drag(simulation) {
+        return d3.drag()
+            .on("start", (event, d) => {
+                if (!event.active) simulation.alphaTarget(0.3).restart();
+                d.fx = d.x;
+                d.fy = d.y;
+            })
+            .on("drag", (event, d) => {
+                d.fx = event.x;
+                d.fy = event.y;
+            })
+            .on("end", (event, d) => {
+                if (!event.active) simulation.alphaTarget(0);
+                d.fx = null;
+                d.fy = null;
+            });
+    }
+});
+</script>
+
 </body>
 </html>

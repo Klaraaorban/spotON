@@ -226,6 +226,44 @@ app.get('/api/top-tracks', async (req, res) => {
     }
 });
 
+// API Route for fetching related artists
+app.get('/api/related-artists', async (req, res) => {
+    if (!req.user) return res.status(401).json({ message: 'Unauthorized' });
+
+    const { name } = req.query;
+    const accessToken = req.user.accessToken;
+
+    try {
+        // Step 1: Search for the artist to get ID
+        const searchRes = await axios.get('https://api.spotify.com/v1/search', {
+            headers: { Authorization: `Bearer ${accessToken}` },
+            params: { q: name, type: 'artist', limit: 1 }
+        });
+
+        const artist = searchRes.data.artists.items[0];
+        if (!artist) return res.status(404).json({ message: 'Artist not found' });
+
+        // Step 2: Get related artists
+        const relatedRes = await axios.get(`https://api.spotify.com/v1/artists/${artist.id}/related-artists`, {
+            headers: { Authorization: `Bearer ${accessToken}` }
+        });
+
+        const related = relatedRes.data.artists.map(a => ({
+            id: a.id,
+            name: a.name,
+            popularity: a.popularity,
+            genres: a.genres,
+            image: a.images[0]?.url
+        }));
+
+        res.json({ root: artist.name, related });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Failed to fetch related artists');
+    }
+});
+
+
 // Root Route
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
