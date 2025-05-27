@@ -188,81 +188,46 @@ app.get('/api/now-playing', async (req, res) => {
 });
 
 // get top tracks for a time
-// Get long-term top tracks
 app.get('/api/top-tracks', async (req, res) => {
     if (!req.user) return res.status(401).json({ message: 'Unauthorized' });
 
     let accessToken = req.user.accessToken;
     let refreshToken = req.user.refreshToken;
 
-    const fetchTopTracks = async (token) => {
-        return axios.get('https://api.spotify.com/v1/me/top/tracks', {
-            headers: { Authorization: `Bearer ${token}` },
-            params: {
-                time_range: 'long_term', // 🔥 This fetches ALL-TIME top tracks
-                limit: 10
-            }
-        });
-    };
-
     try {
-        let response = await fetchTopTracks(accessToken);
+        const response = await axios.get('https://api.spotify.com/v1/me/top/tracks?limit=10', {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
 
-        // Token expired or invalid
         if (response.status === 401) {
             accessToken = await refreshAccessToken(refreshToken);
-            response = await fetchTopTracks(accessToken);
+
+            // Retry the request with the new access token
+            const retryResponse = await axios.get('https://api.spotify.com/v1/me/top/tracks?limit=50', {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+
+            const tracks = retryResponse.data.items.map((track) => ({
+                name: track.name,
+                artist: track.artists.map((a) => a.name).join(', ')
+            }));
+            return res.json(tracks);
         }
 
         const tracks = response.data.items.map((track) => ({
             name: track.name,
             artist: track.artists.map((a) => a.name).join(', ')
         }));
-
         res.json(tracks);
     } catch (error) {
-        console.error(error.response?.data || error);
+        console.error(error);
         res.status(500).send('Error fetching top tracks');
     }
 });
-
-// API Route for fetching related artists
-app.get('/api/related-artists', async (req, res) => {
-    if (!req.user) return res.status(401).json({ message: 'Unauthorized' });
-
-    const { name } = req.query;
-    const accessToken = req.user.accessToken;
-
-    try {
-        // Step 1: Search for the artist to get ID
-        const searchRes = await axios.get('https://api.spotify.com/v1/search', {
-            headers: { Authorization: `Bearer ${accessToken}` },
-            params: { q: name, type: 'artist', limit: 1 }
-        });
-
-        const artist = searchRes.data.artists.items[0];
-        if (!artist) return res.status(404).json({ message: 'Artist not found' });
-
-        // Step 2: Get related artists
-        const relatedRes = await axios.get(`https://api.spotify.com/v1/artists/${artist.id}/related-artists`, {
-            headers: { Authorization: `Bearer ${accessToken}` }
-        });
-
-        const related = relatedRes.data.artists.map(a => ({
-            id: a.id,
-            name: a.name,
-            popularity: a.popularity,
-            genres: a.genres,
-            image: a.images[0]?.url
-        }));
-
-        res.json({ root: artist.name, related });
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Failed to fetch related artists');
-    }
-});
-
 
 // Root Route
 app.get('/', (req, res) => {
