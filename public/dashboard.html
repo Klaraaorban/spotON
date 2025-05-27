@@ -140,19 +140,19 @@
 <body>
     <h1>Your Spotify Dashboard</h1>
 
-    <button id="fetch-tracks">Show My Tracks</button>
+    <!-- <button id="fetch-tracks">Show My Tracks</button> -->
     <div id="tracks" class="dropdown">
         <h2>Your Top 10 Tracks</h2>
         <ul id="track-list"></ul>
     </div>
 
-    <button id="fetch-artists">Show My Artists</button>
+    <!-- <button id="fetch-artists">Show My Artists</button> -->
     <div id="artists" class="dropdown">
         <h2>Your Top 10 Artists</h2>
         <ul id="artist-list"></ul>
     </div>
 
-    <button id="fetch-top-tracks">Life Top Track</button>
+    <!-- <button id="fetch-top-tracks">Life Top Track</button> -->
     <div id="top-tracks" class="dropdown">
         <h2>Your Top Tracks</h2>
         <ul id="top-tracks-list"></ul>
@@ -228,22 +228,34 @@
         };
 
         // Define fetch logic for tracks and artists
-        toggleSection('fetch-tracks', 'tracks', '/api/tracks', 'track-list', track => {
-            return `<span class="track-name">${track.name}</span> by <span class="artist-name">${track.artist}</span>`;
-        });
-
-        toggleSection('fetch-artists', 'artists', '/api/artists', 'artist-list', artist => {
-            return `<span class="artist-name">${artist.name}</span>`;
-        });
-
-        // toggleSection('fetch-top-tracks', 'top-tracks', '/api/top-tracks', 'top-tracks-list', track => {
-        //     return `<span class="track-name">${track.name}</span> by <span class="artist-name">${track.artist}</span> from the album <span class="album-name">${track.album}</span>`;
+        // toggleSection('fetch-tracks', 'tracks', '/api/tracks', 'track-list', track => {
+        //     return `<span class="track-name">${track.name}</span> by <span class="artist-name">${track.artist}</span>`;
         // });
 
+        // toggleSection('fetch-artists', 'artists', '/api/artists', 'artist-list', artist => {
+        //     return `<span class="artist-name">${artist.name}</span>`;
+        // });
 
-        toggleSection('fetch-top-tracks', 'top-tracks', '/api/top-tracks', 'top-tracks-list', track => {
-            return `<span class="track-name">${track.name}</span> by <span class="artist-name">${track.artist}</span>`;
-        });
+        // // toggleSection('fetch-top-tracks', 'top-tracks', '/api/top-tracks', 'top-tracks-list', track => {
+        // //     return `<span class="track-name">${track.name}</span> by <span class="artist-name">${track.artist}</span> from the album <span class="album-name">${track.album}</span>`;
+        // // });
+
+
+        // toggleSection('fetch-top-tracks', 'top-tracks', '/api/top-tracks', 'top-tracks-list', track => {
+        //     return `<span class="track-name">${track.name}</span> by <span class="artist-name">${track.artist}</span>`;
+        // });
+
+        toggleMenuSection('menu-top-tracks', 'tracks', '/api/tracks', 'track-list', track => 
+            `<span class="track-name">${track.name}</span> by <span class="artist-name">${track.artist}</span>`
+            );
+
+            toggleMenuSection('menu-top-artists', 'artists', '/api/artists', 'artist-list', artist => 
+            `<span class="artist-name">${artist.name}</span>`
+            );
+
+            toggleMenuSection('menu-now-playing', 'top-tracks', '/api/top-tracks', 'top-tracks-list', track => 
+            `<span class="track-name">${track.name}</span> by <span class="artist-name">${track.artist}</span>`
+            );
 
         // Now Playing Bar
         async function updateNowPlaying() {
