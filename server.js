@@ -23,7 +23,7 @@ const app = express();
 app.use(express.json());
 
 app.use(express.static('public')); // Serve static files from the "public" folder
-app.use(session({ secret: "mysecret", resave: false, saveUninitialized: true, cookie: {maxAge: 30000}}));
+app.use(session({ secret: "mysecret", resave: false, saveUninitialized: true, cookie: {maxAge: 300000}}));
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -319,6 +319,8 @@ app.post('/api/share', async (req, res) => {
       image_url,
       sharedAt: new Date(),
     });
+
+    console.log('Insert successful:', track); // <---- Add this here
 
     res.status(200).json({ message: 'Track shared!' });
   } catch (err) {
