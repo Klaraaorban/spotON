@@ -31,7 +31,7 @@ export default async function handler(req, res) {
       album,
       image_url,
       sharedAt: new Date(),
-    });
+    }); 
 
     res.status(200).json({ message: 'Track shared!' });
   } catch (err) {
