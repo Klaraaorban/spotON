@@ -14,35 +14,16 @@ let client;
 let clientPromise;
 
 if (!global._mongoClientPromise) {
-  client = new MongoClient(uri);
+  client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
   global._mongoClientPromise = client.connect();
 }
 clientPromise = global._mongoClientPromise;
-
+// 
 const app = express();
 app.use(express.json());
 
 app.use(express.static('public')); // Serve static files from the "public" folder
-// app.use(session({ secret: "mysecret", resave: false, saveUninitialized: true, cookie: {maxAge: 30000}}));
-const MongoStore = require('connect-mongo');
-
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'fallback-secret',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
-    secure: true,
-    sameSite: 'none'
-  },
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGODB_URI,
-    collectionName: 'sessions',
-    ttl: 60 * 60 * 24 * 14 // 14 days
-  })
-}));
-// 
-// 
+app.use(session({ secret: "mysecret", resave: false, saveUninitialized: true, cookie: {maxAge: 30000}}));
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -55,7 +36,7 @@ passport.use(new SpotifyStrategy({
     clientID: process.env.SPOTIFY_CLIENT_ID,
     clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
     callbackURL: 'https://www.spot-on-wrapped.me/callback',
-}, (accessToken, refreshToken, profile, done) => {
+}, (accessToken, refreshToken, expires_in, profile, done) => {
     profile.accessToken = accessToken;
     profile.refreshToken = refreshToken;
     return done(null, profile);
@@ -194,7 +175,7 @@ app.get('/api/now-playing', async (req, res) => {
         }
 
         return res.json(response.data);
-// 
+
     } catch (error) {
         if (error.response && error.response.status === 401) {
             try {
@@ -321,10 +302,6 @@ app.get('/api/recently-played', async (req, res) => {
 
 app.post('/api/share', async (req, res) => {
   const { track, artist, album, image_url } = req.body;
-  if (!req.user) {
-  return res.status(401).json({ error: 'Unauthorized' });
-}
-
 
   if (!track || !artist) {
     return res.status(400).json({ error: 'Missing track or artist' });

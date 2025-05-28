@@ -304,7 +304,7 @@
         displayNoMusic();
     }
 }
-// 
+
 function displayNoMusic() {
     document.getElementById('now-playing-album-art').style.display = 'none';
     document.getElementById('now-playing-track').textContent = 'No music playing';
@@ -324,7 +324,6 @@ setInterval(updateNowPlaying, 15000);
   if (track === 'No music playing') return alert('No track to share');
 
   const payload = { track, artist, album, image_url };
-  console.log('Sharing track:', track, artist, album, image_url);
 
   try {
     const response = await fetch('/api/share', {
