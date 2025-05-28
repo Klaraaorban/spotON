@@ -165,21 +165,22 @@
         <ul id="recently-played-list"></ul>
     </div>
 
-<div id="now-playing-box" style="display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: rgba(0, 0, 0, 0.7); border-radius: 12px; width: 100%; max-width: 600px; margin: auto;">
-    <img id="now-playing-album-art" src="" alt="Album Art" style="width: 50px; height: 50px; border-radius: 12px; object-fit: cover; background-color: #000; flex-shrink: 0; display: none;" />
-    
-    <div style="display: flex; gap: 10px; flex-grow: 1; overflow: hidden; white-space: nowrap; align-items: center; font-size: 14px;">
-        <p id="now-playing-track" style="margin: 0; font-weight: bold; overflow: hidden; text-overflow: ellipsis; max-width: 40%;">Not Playing</p>
-        <p id="now-playing-artist" style="margin: 0; opacity: 0.8; overflow: hidden; text-overflow: ellipsis; max-width: 30%;"></p>
-        <p id="now-playing-album" style="margin: 0; opacity: 0.6; overflow: hidden; text-overflow: ellipsis; max-width: 30%;"></p>
-    </div>
-
-    <button id="share-now-playing" style="background: #1db954; border: none; color: white; padding: 6px 12px; border-radius: 16px; cursor: pointer; font-weight: 500;">Share</button>
+    <div id="now-playing-box" style="position: fixed; bottom: 20px; right: 20px; width: 360px; background-color: #181818; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.6); display: flex; align-items: center; padding: 14px 16px; font-family: 'Segoe UI', sans-serif; color: white; cursor: default; user-select: none; z-index: 1000; overflow: hidden;">
+  <div id="blurred-bg" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; filter: blur(30px); opacity: 0.2; background-position: center; background-size: cover; z-index: 0; border-radius: 16px; transition: background-image 0.5s ease;"></div>
+  <img id="now-playing-album-art" alt="Album Art" style="height: 64px; width: 64px; border-radius: 12px; object-fit: cover; background-color: #000; flex-shrink: 0; z-index: 2; animation: spin 25s linear infinite;" />
+  <div style="display: flex; flex-direction: column; justify-content: center; margin-left: 16px; overflow: hidden; flex-grow: 1; z-index: 2;">
+    <div id="now-playing-track" style="font-weight: 600; font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #1DB954;">Not Playing</div>
+    <div id="now-playing-artist" style="font-size: 0.9rem; color: #d0d0d0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 4px;"></div>
+    <div id="now-playing-album" style="font-size: 0.8rem; color: #aaa; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; font-style: italic;"></div>
+  </div>
+  <div style="z-index: 2; margin-left: 12px;">
+    <button id="share-now-playing" style="padding: 6px 14px; background-color: #1DB954; border: none; border-radius: 20px; color: white; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: background 0.3s ease;" onmouseover="this.style.backgroundColor='#1ed760';" onmouseout="this.style.backgroundColor='#1DB954';">Share</button>
+  </div>
 </div>
 
 
-    <!-- Now playing music
-<div id="now-playing-box" style="position: fixed; bottom: 20px; right: 20px; width: 360px; background-color: #282828; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.7); display: flex; padding: 12px; align-items: center; font-family: 'Arial', sans-serif; color: white; cursor: default; user-select: none; z-index: 1000; overflow: hidden;">
+    <!-- Now playing music -->
+<!-- <div id="now-playing-box" style="position: fixed; bottom: 20px; right: 20px; width: 360px; background-color: #282828; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.7); display: flex; padding: 12px; align-items: center; font-family: 'Arial', sans-serif; color: white; cursor: default; user-select: none; z-index: 1000; overflow: hidden;">
   <div id="blurred-bg" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; filter: blur(20px); opacity: 0.15; background-position: center; background-size: cover; z-index: 0; border-radius: 12px; transition: background-image 0.5s ease;"></div>
   
   <img id="now-playing-album-art" alt="Album Art" style="height: 60px; width: 60px; border-radius: 50%; object-fit: cover; background-color: #000; flex-shrink: 0; z-index: 2; animation: spin 20s linear infinite;" />
@@ -196,6 +197,7 @@
     </button>
   </div>
 </div> -->
+
 <!-- menu -->
     <div class="menu-container">
   <button id="menu-button" class="menu-button" aria-label="Menu">☰</button>
