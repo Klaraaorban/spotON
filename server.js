@@ -329,6 +329,20 @@ app.post('/api/share', async (req, res) => {
   }
 });
 
+// fetching the shared music to the dashboard
+app.get('/api/shared-tracks', async (req, res) => {
+  try {
+    const client = await clientPromise;
+    const db = client.db('spotify');
+    const collection = db.collection('shared_tracks');
+    const tracks = await collection.find().sort({ sharedAt: -1 }).toArray(); // newest first
+    res.json(tracks);
+  } catch (err) {
+    console.error('MongoDB fetch error:', err);
+    res.status(500).json({ error: 'Failed to fetch shared tracks' });
+  }
+});
+
 
 
 // Root Route
