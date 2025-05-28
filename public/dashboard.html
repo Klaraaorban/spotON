@@ -165,7 +165,18 @@
         <ul id="recently-played-list"></ul>
     </div>
 
-<div id="now-playing" style="position: fixed; bottom: 20px; right: 20px; width: 480px; background-color: #282828; border-radius: 12px; padding: 10px 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.7); display: flex; align-items: center; font-family: 'Arial', sans-serif; color: white; user-select: none; z-index: 1000; overflow: hidden; cursor: default; gap: 12px;"><img id="now-playing-album-art" src="" alt="Album Art" style="width: 50px; height: 50px; border-radius: 12px; object-fit: cover; background-color: #000; flex-shrink: 0;" /><div style="display: flex; gap: 10px; flex-grow: 1; overflow: hidden; white-space: nowrap; align-items: center;"><p id="now-playing-track" style="font-weight: 700; font-size: 1rem; color: #1DB954; overflow: hidden; text-overflow: ellipsis; margin: 0; max-width: 150px;">Not Playing</p><p id="now-playing-artist" style="font-size: 0.9rem; color: #B3B3B3; overflow: hidden; text-overflow: ellipsis; margin: 0; max-width: 130px;"></p><p id="now-playing-album" style="font-size: 0.85rem; color: #888; font-style: italic; overflow: hidden; text-overflow: ellipsis; margin: 0; max-width: 130px;"></p></div><button id="share-now-playing" style="padding: 6px 14px; background: linear-gradient(135deg, #1DB954, #1ed760); border: none; border-radius: 24px; color: white; cursor: pointer; font-weight: 700; font-size: 0.85rem; box-shadow: 0 4px 8px rgba(29, 185, 84, 0.4); transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease; user-select: none; flex-shrink: 0;">Share</button></div>
+<div id="now-playing-box" style="display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: rgba(0, 0, 0, 0.7); border-radius: 12px; width: 100%; max-width: 600px; margin: auto;">
+    <img id="now-playing-album-art" src="" alt="Album Art" style="width: 50px; height: 50px; border-radius: 12px; object-fit: cover; background-color: #000; flex-shrink: 0; display: none;" />
+    
+    <div style="display: flex; gap: 10px; flex-grow: 1; overflow: hidden; white-space: nowrap; align-items: center; font-size: 14px;">
+        <p id="now-playing-track" style="margin: 0; font-weight: bold; overflow: hidden; text-overflow: ellipsis; max-width: 40%;">Not Playing</p>
+        <p id="now-playing-artist" style="margin: 0; opacity: 0.8; overflow: hidden; text-overflow: ellipsis; max-width: 30%;"></p>
+        <p id="now-playing-album" style="margin: 0; opacity: 0.6; overflow: hidden; text-overflow: ellipsis; max-width: 30%;"></p>
+    </div>
+
+    <button id="share-now-playing" style="background: #1db954; border: none; color: white; padding: 6px 12px; border-radius: 16px; cursor: pointer; font-weight: 500;">Share</button>
+</div>
+
 
     <!-- Now playing music
 <div id="now-playing-box" style="position: fixed; bottom: 20px; right: 20px; width: 360px; background-color: #282828; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.7); display: flex; padding: 12px; align-items: center; font-family: 'Arial', sans-serif; color: white; cursor: default; user-select: none; z-index: 1000; overflow: hidden;">
