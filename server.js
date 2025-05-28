@@ -237,7 +237,7 @@ app.get('/api/recently-played', async (req, res) => {
   try {
     const response = await axios.get('https://api.spotify.com/v1/me/player/recently-played', {
       headers: { Authorization: `Bearer ${accessToken}` },
-      params: { limit: 10 }  // last 10 played tracks
+      params: { limit: 25 }  
     });
 
     const tracks = response.data.items.map(item => {

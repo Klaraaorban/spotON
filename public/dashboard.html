@@ -173,6 +173,9 @@
     <div id="now-playing-artist" style="font-size: 0.9rem; color: #B3B3B3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 240px; margin-top: 2px;"></div>
     <div id="now-playing-album" style="font-size: 0.85rem; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 240px; margin-top: 4px; font-style: italic;"></div>
   </div>
+   <button id="share-now-playing" style="margin-top: 8px; padding: 6px 10px; background-color: #1DB954; border: none; border-radius: 12px; color: white; cursor: pointer; font-weight: 600; width: 80px; user-select: none;">
+    Share
+  </button>
 </div>
 <!-- menu -->
     <div class="menu-container">
@@ -193,65 +196,69 @@
         }
     </style>
 
-
-    <!-- <button id="fetch-genres">Show My Genres</button>
-    <div id="genres" class="dropdown">
-        <h2>Your Top 10 Genres</h2>
-        <ul id="genre-list"></ul>
-    </div> -->
-
     <script>
+        // const toggleSection = (buttonId, sectionId, fetchUrl, listId, formatter) => {
+        //     const button = document.getElementById(buttonId);
+        //     const section = document.getElementById(sectionId);
+
+        //     button.addEventListener('click', async () => {
+        //         if (section.style.display === 'block') {
+        //             section.style.display = 'none';
+        //         } else {
+        //             try {
+        //                 // Fetch and populate data
+        //                 const response = await fetch(fetchUrl);
+        //                 if (!response.ok) {
+        //                     throw new Error(`Failed to fetch data from ${fetchUrl}`);
+        //                 }
+        //                 const data = await response.json();
+        //                 const list = document.getElementById(listId);
+        //                 list.innerHTML = ''; 
+
+        //                 data.forEach(item => {
+        //                     const li = document.createElement('li');
+        //                     li.innerHTML = formatter(item);
+        //                     list.appendChild(li);
+        //                 });
+
+        //                 section.style.display = 'block';
+        //             } catch (error) {
+        //                 console.error(error);
+        //                 section.innerHTML = `<p>Error fetching data</p>`;
+        //             }
+        //         }
+        //     });
+        // };
         const toggleSection = (buttonId, sectionId, fetchUrl, listId, formatter) => {
             const button = document.getElementById(buttonId);
             const section = document.getElementById(sectionId);
 
             button.addEventListener('click', async () => {
-                if (section.style.display === 'block') {
-                    section.style.display = 'none';
-                } else {
-                    try {
-                        // Fetch and populate data
-                        const response = await fetch(fetchUrl);
-                        if (!response.ok) {
-                            throw new Error(`Failed to fetch data from ${fetchUrl}`);
-                        }
-                        const data = await response.json();
-                        const list = document.getElementById(listId);
-                        list.innerHTML = ''; 
-
-                        data.forEach(item => {
-                            const li = document.createElement('li');
-                            li.innerHTML = formatter(item);
-                            list.appendChild(li);
-                        });
-
-                        section.style.display = 'block';
-                    } catch (error) {
-                        console.error(error);
-                        section.innerHTML = `<p>Error fetching data</p>`;
+                try {
+                    const response = await fetch(fetchUrl);
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch data from ${fetchUrl}`);
                     }
+                    const data = await response.json();
+                    const list = document.getElementById(listId);
+                    list.innerHTML = '';
+
+                    data.forEach(item => {
+                        const li = document.createElement('li');
+                        li.innerHTML = formatter(item);
+                        list.appendChild(li);
+                    });
+
+                    // Toggle visibility only after refreshing content
+                    section.style.display = (section.style.display === 'block') ? 'none' : 'block';
+                } catch (error) {
+                    console.error(error);
+                    section.innerHTML = `<p>Error fetching data</p>`;
                 }
             });
         };
 
         // Define fetch logic for tracks and artists
-        // toggleSection('fetch-tracks', 'tracks', '/api/tracks', 'track-list', track => {
-        //     return `<span class="track-name">${track.name}</span> by <span class="artist-name">${track.artist}</span>`;
-        // });
-
-        // toggleSection('fetch-artists', 'artists', '/api/artists', 'artist-list', artist => {
-        //     return `<span class="artist-name">${artist.name}</span>`;
-        // });
-
-        // // toggleSection('fetch-top-tracks', 'top-tracks', '/api/top-tracks', 'top-tracks-list', track => {
-        // //     return `<span class="track-name">${track.name}</span> by <span class="artist-name">${track.artist}</span> from the album <span class="album-name">${track.album}</span>`;
-        // // });
-
-
-        // toggleSection('fetch-top-tracks', 'top-tracks', '/api/top-tracks', 'top-tracks-list', track => {
-        //     return `<span class="track-name">${track.name}</span> by <span class="artist-name">${track.artist}</span>`;
-        // });
-
         toggleSection('menu-top-tracks', 'tracks', '/api/tracks', 'track-list', track => 
             `<span class="track-name">${track.name}</span> by <span class="artist-name">${track.artist}</span>`
         );
@@ -305,7 +312,6 @@ setInterval(updateNowPlaying, 15000);
 
 
 
-
     </script>
 
 <!-- menu button -->
@@ -325,7 +331,3 @@ setInterval(updateNowPlaying, 15000);
   </script>
 </body>
 </html>
-
-<!-- recently played
- playlists
-  -->
