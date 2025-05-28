@@ -14,11 +14,11 @@ let client;
 let clientPromise;
 
 if (!global._mongoClientPromise) {
-  client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+  client = new MongoClient(uri);
   global._mongoClientPromise = client.connect();
 }
 clientPromise = global._mongoClientPromise;
-// 
+
 const app = express();
 app.use(express.json());
 
@@ -299,11 +299,13 @@ app.get('/api/recently-played', async (req, res) => {
     }
 });
 
-
 app.post('/api/share', async (req, res) => {
+  console.log('Received share request:', req.body);
+
   const { track, artist, album, image_url } = req.body;
 
   if (!track || !artist) {
+    console.log('Missing track or artist in request body');
     return res.status(400).json({ error: 'Missing track or artist' });
   }
 
@@ -312,13 +314,14 @@ app.post('/api/share', async (req, res) => {
     const db = client.db('spotify');
     const collection = db.collection('shared_tracks');
 
-    await collection.insertOne({
+    const result = await collection.insertOne({
       track,
       artist,
       album,
       image_url,
       sharedAt: new Date(),
     });
+    console.log('Insert result:', result);
 
     res.status(200).json({ message: 'Track shared!' });
   } catch (err) {

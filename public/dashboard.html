@@ -324,6 +324,7 @@ setInterval(updateNowPlaying, 15000);
   if (track === 'No music playing') return alert('No track to share');
 
   const payload = { track, artist, album, image_url };
+  console.log('Sharing track:', track, artist, album, image_url);
 
   try {
     const response = await fetch('/api/share', {
