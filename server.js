@@ -4,8 +4,23 @@ const SpotifyStrategy = require('passport-spotify').Strategy;
 const axios = require('axios');
 const session = require('express-session');
 require('dotenv').config();
+// 
+const { MongoClient } = require('mongodb');
 
+const uri = process.env.MONGODB_URI;
+console.log('Mongo URI:', uri ? 'Loaded' : 'Missing');
+
+let client;
+let clientPromise;
+
+if (!global._mongoClientPromise) {
+  client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+  global._mongoClientPromise = client.connect();
+}
+clientPromise = global._mongoClientPromise;
+// 
 const app = express();
+app.use(express.json());
 
 app.use(express.static('public')); // Serve static files from the "public" folder
 app.use(session({ secret: "mysecret", resave: false, saveUninitialized: true, cookie: {maxAge: 30000}}));
@@ -283,6 +298,36 @@ app.get('/api/recently-played', async (req, res) => {
         res.status(500).send('Failed to fetch top tracks');
     }
 });
+
+
+app.post('/api/share', async (req, res) => {
+  const { track, artist, album, image_url } = req.body;
+
+  if (!track || !artist) {
+    return res.status(400).json({ error: 'Missing track or artist' });
+  }
+
+  try {
+    const client = await clientPromise;
+    const db = client.db('spotify');
+    const collection = db.collection('shared_tracks');
+
+    await collection.insertOne({
+      track,
+      artist,
+      album,
+      image_url,
+      sharedAt: new Date(),
+    });
+
+    res.status(200).json({ message: 'Track shared!' });
+  } catch (err) {
+    console.error('MongoDB insert error:', err);
+    res.status(500).json({ error: 'Database error' });
+  }
+});
+
+
 
 // Root Route
 app.get('/', (req, res) => {
