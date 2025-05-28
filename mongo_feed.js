@@ -1,6 +1,7 @@
 import { MongoClient } from 'mongodb';
 
 const uri = process.env.MONGODB_URI;
+console.log('Mongo URI:', process.env.MONGODB_URI ? 'Loaded' : 'Missing');
 let client;
 let clientPromise;
 
