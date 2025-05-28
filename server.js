@@ -33,7 +33,7 @@ app.get("/auth/spotify", passport.authenticate('spotify', {
         'user-read-email', 'user-read-private', 'user-read-playback-state',
         'user-modify-playback-state', 'user-read-currently-playing',
         'user-top-read', 'playlist-read-private', 'playlist-read-collaborative',
-        'playlist-modify-public', 'playlist-modify-private'
+        'playlist-modify-public', 'playlist-modify-private', 'user-read-recently-played'
     ]
 }));
 
@@ -244,10 +244,7 @@ app.get('/api/recently-played', async (req, res) => {
       const track = item.track;
       return {
         name: track.name,
-        artist: track.artists.map(a => a.name).join(', '),
-        album: track.album.name,
-        image: track.album.images[0]?.url,
-        playedAt: item.played_at
+        artist: track.artists.map(a => a.name).join(', ')
       };
     });
 
