@@ -194,7 +194,7 @@ app.get('/api/now-playing', async (req, res) => {
         }
 
         return res.json(response.data);
-
+// 
     } catch (error) {
         if (error.response && error.response.status === 401) {
             try {
