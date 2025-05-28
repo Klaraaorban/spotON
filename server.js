@@ -23,7 +23,26 @@ const app = express();
 app.use(express.json());
 
 app.use(express.static('public')); // Serve static files from the "public" folder
-app.use(session({ secret: "mysecret", resave: false, saveUninitialized: true, cookie: {maxAge: 30000}}));
+// app.use(session({ secret: "mysecret", resave: false, saveUninitialized: true, cookie: {maxAge: 30000}}));
+const MongoStore = require('connect-mongo');
+
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'fallback-secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+    secure: true,
+    sameSite: 'none'
+  },
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGODB_URI,
+    collectionName: 'sessions',
+    ttl: 60 * 60 * 24 * 14 // 14 days
+  })
+}));
+// 
+// 
 
 app.use(passport.initialize());
 app.use(passport.session());
