@@ -327,7 +327,7 @@ app.post('/api/share', async (req, res) => {
     console.error('MongoDB insert error:', err);
     res.status(500).json({ error: 'Database error' });
   }
-});s
+});
 
 
 
