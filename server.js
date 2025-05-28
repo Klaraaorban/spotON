@@ -317,7 +317,7 @@ app.post('/api/share', async (req, res) => {
       artist,
       album,
       image_url,
-      sharedAt: new Date(),
+    //   sharedAt: new Date(),
     });
 
     console.log('Insert successful:', track); // <---- Add this here
@@ -327,7 +327,7 @@ app.post('/api/share', async (req, res) => {
     console.error('MongoDB insert error:', err);
     res.status(500).json({ error: 'Database error' });
   }
-});
+});s
 
 
 

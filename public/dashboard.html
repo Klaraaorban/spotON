@@ -202,38 +202,6 @@
     </style>
 
     <script>
-        // const toggleSection = (buttonId, sectionId, fetchUrl, listId, formatter) => {
-        //     const button = document.getElementById(buttonId);
-        //     const section = document.getElementById(sectionId);
-
-        //     button.addEventListener('click', async () => {
-        //         if (section.style.display === 'block') {
-        //             section.style.display = 'none';
-        //         } else {
-        //             try {
-        //                 // Fetch and populate data
-        //                 const response = await fetch(fetchUrl);
-        //                 if (!response.ok) {
-        //                     throw new Error(`Failed to fetch data from ${fetchUrl}`);
-        //                 }
-        //                 const data = await response.json();
-        //                 const list = document.getElementById(listId);
-        //                 list.innerHTML = ''; 
-
-        //                 data.forEach(item => {
-        //                     const li = document.createElement('li');
-        //                     li.innerHTML = formatter(item);
-        //                     list.appendChild(li);
-        //                 });
-
-        //                 section.style.display = 'block';
-        //             } catch (error) {
-        //                 console.error(error);
-        //                 section.innerHTML = `<p>Error fetching data</p>`;
-        //             }
-        //         }
-        //     });
-        // };
         const toggleSection = (buttonId, sectionId, fetchUrl, listId, formatter) => {
             const button = document.getElementById(buttonId);
             const section = document.getElementById(sectionId);
@@ -324,7 +292,7 @@ setInterval(updateNowPlaying, 15000);
   if (track === 'No music playing') return alert('No track to share');
 
   const payload = { track, artist, album, image_url };
-
+    console.log('Sharing payload:', payload);
   try {
     const response = await fetch('/api/share', {
       method: 'POST',
