@@ -8,16 +8,29 @@ require('dotenv').config();
 const { MongoClient } = require('mongodb');
 
 const uri = process.env.MONGODB_URI;
-console.log('Mongo URI:', uri ? 'Loaded' : 'Missing');
+const options = {
+  serverSelectionTimeoutMS: 5000, // abort after 5 seconds if cannot connect
+};
 
 let client;
 let clientPromise;
 
-if (!global._mongoClientPromise) {
-  client = new MongoClient(uri);
-  global._mongoClientPromise = client.connect();
+if (!process.env.MONGODB_URI) {
+  throw new Error('Please add your Mongo URI to .env.local');
 }
-clientPromise = global._mongoClientPromise;
+
+if (process.env.NODE_ENV === 'development') {
+  if (!global._mongoClientPromise) {
+    client = new MongoClient(uri, options);
+    global._mongoClientPromise = client.connect();
+  }
+  clientPromise = global._mongoClientPromise;
+} else {
+  client = new MongoClient(uri, options);
+  clientPromise = client.connect();
+}
+
+export default clientPromise;
 
 const app = express();
 app.use(express.json());
@@ -300,17 +313,18 @@ app.get('/api/recently-played', async (req, res) => {
 });
 
 app.post('/api/share', async (req, res) => {
-  console.log('Received share request:', req.body);
-
   const { track, artist, album, image_url } = req.body;
 
   if (!track || !artist) {
-    console.log('Missing track or artist in request body');
     return res.status(400).json({ error: 'Missing track or artist' });
   }
 
+  console.log('Received share request:', req.body);
+
   try {
     const client = await clientPromise;
+    console.log('Connected to MongoDB');
+    
     const db = client.db('spotify');
     const collection = db.collection('shared_tracks');
 
@@ -321,7 +335,8 @@ app.post('/api/share', async (req, res) => {
       image_url,
       sharedAt: new Date(),
     });
-    console.log('Insert result:', result);
+
+    console.log('Inserted track:', result.insertedId);
 
     res.status(200).json({ message: 'Track shared!' });
   } catch (err) {
@@ -329,6 +344,7 @@ app.post('/api/share', async (req, res) => {
     res.status(500).json({ error: 'Database error' });
   }
 });
+
 
 
 
