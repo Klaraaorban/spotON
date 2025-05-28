@@ -55,7 +55,7 @@ passport.use(new SpotifyStrategy({
     clientID: process.env.SPOTIFY_CLIENT_ID,
     clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
     callbackURL: 'https://www.spot-on-wrapped.me/callback',
-}, (accessToken, refreshToken, expires_in, profile, done) => {
+}, (accessToken, refreshToken, profile, done) => {
     profile.accessToken = accessToken;
     profile.refreshToken = refreshToken;
     return done(null, profile);
