@@ -303,16 +303,21 @@
 
 #current-image {
   border-radius: 10px;
-  transition: border-radius 0.4s ease, transform 0.6s ease;
+  transition: border-radius 0.4s ease;
   display: inline-block;
   transform-origin: center center;
-  transform: rotate(0deg);
 }
 
 #current-image:hover {
   border-radius: 50%;
-  transform: rotate(180deg); /* rotate half a turn */
+  animation: slow-spin 10s linear infinite;
 }
+
+@keyframes slow-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 
 
   </style>
