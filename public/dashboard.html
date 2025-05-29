@@ -364,12 +364,11 @@ function displayNoMusic() {
     document.getElementById('now-playing-album').textContent = '';
 }
 
-updateNowPlaying();
 document.addEventListener('DOMContentLoaded', () => {
     updateNowPlaying();
     setInterval(updateNowPlaying, 15000);
 });
-
+//updateNowPlaying();
 // setInterval(updateNowPlaying, 15000);
 
     document.getElementById('share-now-playing').addEventListener('click', async () => {
