@@ -140,7 +140,13 @@
 <body>
     <h1>Your Spotify Dashboard</h1>
 
-    <div id="shared-tracks-container" style="margin-top: 20px;"></div>
+    <!-- <div id="shared-tracks-container" style="margin-top: 20px;"></div> -->
+
+    <div id="shared-tracks" class="dropdown">
+        <h2>My Feed</h2>
+        <div id="shared-tracks-container" style="margin-top: 20px;"></div>
+    </div>
+
 
     <!-- <button id="fetch-tracks">Show My Tracks</button> -->
     <div id="tracks" class="dropdown">
@@ -209,6 +215,7 @@
     <div class="menu-container">
   <button id="menu-button" class="menu-button" aria-label="Menu">☰</button>
   <div id="menu" class="menu hidden">
+    <a href="#" id="menu-shared-tracks">My Feed</a>
     <a href="#" id="menu-top-tracks">Top Tracks</a>
     <a href="#" id="menu-top-artists">Top Artists</a>
     <a href="#" id="menu-life-top-tracks">Life Top Tracks</a>
