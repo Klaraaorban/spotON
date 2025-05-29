@@ -189,6 +189,16 @@
     </button>
   </div>
 </div>
+<!-- currently playing -->
+<div id="current-track">
+    <img id="current-image" src="" alt="Album Art" />
+    <div>
+        <div id="current-name">Not Playing</div>
+        <div id="current-artist"></div>
+    </div>
+</div>
+
+
 
   <div class="menu-container">
     <button id="feed-button" class="menu-button">Feed</button>
@@ -211,6 +221,8 @@
   const feedButton = document.getElementById('feed-button');
   const feedBlock = document.getElementById('feed-block');
   const sharedTracksContainer = document.getElementById('shared-tracks-container');
+
+  
 
   async function loadSharedTracks() {
     try {
@@ -269,7 +281,36 @@
     }
   });
 </script>
-  
+
+<!-- Currently Playing -->
+<script>
+async function fetchCurrentMusic() {
+    try {
+        const response = await fetch('/api/current-music');
+        const data = await response.json();
+
+        const currentImage = document.getElementById('current-image');
+        const currentName = document.getElementById('current-name');
+        const currentArtist = document.getElementById('current-artist');
+
+        if (data && data.is_playing && data.item) {
+            currentImage.src = data.item.album.images[0].url;
+            currentName.textContent = data.item.name;
+            currentArtist.textContent = data.item.artists.map(artist => artist.name).join(', ');
+        } else {
+            currentImage.src = '';
+            currentName.textContent = 'Not Playing';
+            currentArtist.textContent = '';
+        }
+    } catch (err) {
+        console.error('Error fetching current music:', err);
+    }
+}
+
+fetchCurrentMusic();
+setInterval(fetchCurrentMusic, 15000);
+</script>
+
 
     <style>
         @keyframes spin {

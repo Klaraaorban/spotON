@@ -156,6 +156,19 @@ app.get('/api/artists', async (req, res) => {
         res.status(500).send("Error fetching artists");
     }
 });
+
+
+app.get('/api/current-music', async (req, res) => {
+    try {
+        const data = await spotifyApi.getMyCurrentPlayingTrack();
+        res.json(data.body);
+    } catch (err) {
+        console.error('Error fetching current music:', err);
+        res.status(500).json({ error: 'Failed to fetch current music' });
+    }
+});
+
+
 // API Route for feetching currently playing track
 app.get('/api/now-playing', async (req, res) => {
     if (!req.user) return res.status(401).json({ message: 'Unauthorized' });
