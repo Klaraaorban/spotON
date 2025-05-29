@@ -335,7 +335,7 @@
         const response = await fetch('/api/now-playing', { credentials: 'include' });
 
         if (!response.ok) throw new Error('Fetch failed');
-        const data = await response.json();
+        let data = await response.json();
         // Uncomment for testing fallback data:
     if (!data || !data.item) {
       data = {
