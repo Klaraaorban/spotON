@@ -300,53 +300,24 @@
     0 0 10px #ffffff22;
   margin-bottom: 25px;
 }
-  #current-image {
-    width: 120px;
-    height: 120px;
-    border-radius: 10px;
-    transition: border-radius 0.4s ease;
-    display: inline-block;
-    transform-origin: center center;
-    cursor: pointer;
-  }
 
-  #current-image:hover {
-    animation: slow-spin 10s linear infinite;
-  }
+#current-image {
+  border-radius: 10px;
+  transition: border-radius 0.4s ease;
+  display: inline-block;
+  transform-origin: center center;
+}
 
-  #current-image.circle {
-    border-radius: 50%;
-  }
+#current-image:hover {
+  border-radius: 50%;
+  animation: slow-spin 10s linear infinite;
+}
 
-  @keyframes slow-spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
+@keyframes slow-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
 
-  .music-note {
-    position: absolute;
-    color: #1DB954; /* Spotify green */
-    user-select: none;
-    pointer-events: none;
-    animation: float-up 1.5s forwards;
-  }
-
-  @keyframes float-up {
-    0% {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-    100% {
-      opacity: 0;
-      transform: translateY(-80px) scale(1.5);
-    }
-  }
-
-  /* Container relative so notes position correctly */
-  #current-track {
-    position: relative;
-    display: inline-block;
-  }
 
 
   </style>
@@ -699,52 +670,8 @@ loadSharedTracks();
   }
 
   animate();
-const image = document.getElementById('current-image');
-  const container = document.getElementById('current-track');
 
-  image.addEventListener('click', () => {
-    // Toggle circle border radius
-    image.classList.add('circle');
-
-    // Create 5 music notes
-    for (let i = 0; i < 5; i++) {
-      const note = document.createElement('div');
-      note.classList.add('music-note');
-      note.textContent = '🎵';
-
-      // Random size between 12px and 24px
-      const size = Math.floor(Math.random() * 12) + 12;
-      note.style.fontSize = size + 'px';
-
-      // Start position near center of image
-      const rect = image.getBoundingClientRect();
-      const containerRect = container.getBoundingClientRect();
-      const offsetX = rect.left - containerRect.left + rect.width / 2;
-      const offsetY = rect.top - containerRect.top + rect.height / 2;
-      note.style.left = offsetX + 'px';
-      note.style.top = offsetY + 'px';
-
-      // Random horizontal translation for float effect
-      const moveX = (Math.random() - 0.5) * 100; // -50 to +50 px
-
-      // Animate floating with slight horizontal movement
-      note.animate([
-        { transform: `translate(0, 0) scale(1)`, opacity: 1 },
-        { transform: `translate(${moveX}px, -80px) scale(1.5)`, opacity: 0 }
-      ], {
-        duration: 1500,
-        easing: 'ease-out',
-        fill: 'forwards'
-      });
-
-      container.appendChild(note);
-
-      // Remove note after animation
-      setTimeout(() => {
-        note.remove();
-      }, 1500);
-    }
-  });
+  // Optional: on window resize, update center coordinates dynamically (handled on next frame)
 </script>
 
 </body>
