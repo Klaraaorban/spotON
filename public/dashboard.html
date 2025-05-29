@@ -176,7 +176,7 @@
   <div id="blurred-bg" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; filter: blur(20px); opacity: 0.15; background-position: center; background-size: cover; z-index: 0; border-radius: 12px; transition: background-image 0.5s ease;"></div>
 
   <div style="display: flex; align-items: center; z-index: 2;">
-    <img id="now-playing-album-art" alt="" style="height: 60px; width: 60px; border-radius: 50%; object-fit: cover; background-color: #000; flex-shrink: 0; animation: spin 20s linear infinite;" />
+    <!-- <img id="now-playing-album-art" alt="" style="height: 60px; width: 60px; border-radius: 50%; object-fit: cover; background-color: #000; flex-shrink: 0; animation: spin 20s linear infinite;" /> -->
     <div style="display: flex; flex-direction: column; justify-content: center; margin-left: 15px; overflow: hidden; flex-grow: 1;">
       <div id="now-playing-track" style="font-weight: 700; font-size: 1.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #1DB954;">Play some music ;</div>
       <div id="now-playing-artist" style="font-size: 0.9rem; color: #B3B3B3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px;"></div>
@@ -331,12 +331,12 @@
         // Now Playing Bar
         async function updateNowPlaying() {
     try {
-        // const response = await fetch('/api/now-playing');
-        const response = await fetch('/api/now-playing', { credentials: 'include' });
+        const response = await fetch('/api/now-playing');
+        // const response = await fetch('/api/now-playing', { credentials: 'include' });
 
         if (!response.ok) throw new Error('Fetch failed');
         const data = await response.json();
-        if (!data || !data.item || !data.is_playing) {
+        if (!data || !data.item) {
             displayNoMusic();
             return;
         }
