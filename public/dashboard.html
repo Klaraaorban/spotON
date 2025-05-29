@@ -365,7 +365,12 @@ function displayNoMusic() {
 }
 
 updateNowPlaying();
-setInterval(updateNowPlaying, 15000);
+document.addEventListener('DOMContentLoaded', () => {
+    updateNowPlaying();
+    setInterval(updateNowPlaying, 15000);
+});
+
+// setInterval(updateNowPlaying, 15000);
 
     document.getElementById('share-now-playing').addEventListener('click', async () => {
   const track = document.getElementById('now-playing-track').textContent;
