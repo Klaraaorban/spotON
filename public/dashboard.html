@@ -171,7 +171,7 @@
         <ul id="recently-played-list"></ul>
     </div>
 
-<!-- <div id="now-playing-box" style="position: fixed; bottom: 20px; right: 20px; width: 360px; background-color: #282828; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.7); padding: 12px; font-family: 'Arial', sans-serif; color: white; cursor: default; user-select: none; z-index: 1000; overflow: hidden; display: flex; flex-direction: column; gap: 10px;">
+<div id="now-playing-box" style="position: fixed; bottom: 20px; right: 20px; width: 360px; background-color: #282828; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.7); padding: 12px; font-family: 'Arial', sans-serif; color: white; cursor: default; user-select: none; z-index: 1000; overflow: hidden; display: flex; flex-direction: column; gap: 10px;">
 
   <div id="blurred-bg" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; filter: blur(20px); opacity: 0.15; background-position: center; background-size: cover; z-index: 0; border-radius: 12px; transition: background-image 0.5s ease;"></div>
 
@@ -188,14 +188,8 @@
     <button id="share-now-playing" style="padding: 4px 10px; background-color: #1DB954; border: none; border-radius: 14px; color: white; cursor: pointer; font-weight: 500; font-size: 0.75rem; transition: background 0.3s ease;">Share</button>
   </div>
 
-</div> -->
-
-<div id="now-playing">
-  <img id="album-art" src="" alt="Album Art">
-  <div id="track-name">Loading...</div>
-  <div id="artist-name"></div>
-  <div id="album-name"></div>
 </div>
+
 
   <div class="menu-container">
     <button id="feed-button" class="menu-button">Feed</button>
@@ -338,8 +332,8 @@
 // Now Playing Bar
         async function updateNowPlaying() {
     try {
-        const response = await fetch('/api/now-playing');
-        // const response = await fetch('/api/now-playing', { credentials: 'include' });
+        // const response = await fetch('/api/now-playing');
+        const response = await fetch('/api/now-playing', { credentials: 'include' });
 
         if (!response.ok) throw new Error('Fetch failed');
         const data = await response.json();
