@@ -191,10 +191,7 @@
 </div>
 
 
-<div class="header">
-  <a href="/feed" class="feed-link">
-    <button id="feed-button">Go to Feed</button>
-  </a>
+
 
   <div class="menu-container">
     <button id="menu-button" class="menu-button" aria-label="Menu">☰</button>
@@ -206,7 +203,29 @@
       <a href="#" id="menu-recently-played">Recently Played</a>
     </div>
   </div>
-</div>
+
+    <div class="header">
+    <button id="feed-button">Feed</button>
+    </div>
+
+    <div id="iframe-container"></div>
+
+    <script>
+    document.getElementById('feed-button').addEventListener('click', () => {
+        const container = document.getElementById('iframe-container');
+
+        // Check if iframe already exists to avoid duplicates
+        if (!container.querySelector('iframe')) {
+        const iframe = document.createElement('iframe');
+        iframe.src = '/feed';
+        iframe.style.width = '60%';
+        iframe.style.height = '400px';
+        iframe.style.border = 'none';
+        container.appendChild(iframe);
+        }
+    });
+    </script>
+
     <iframe src="/feed" style="width:60%; height:400px; border:none;"></iframe>
 
     <style>
