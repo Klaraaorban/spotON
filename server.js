@@ -22,7 +22,7 @@ clientPromise = global._mongoClientPromise;
 const app = express();
 app.use(express.json());
 
-app.use(express.static('public')); // Serve static files from the "public" folder
+app.use(express.static('public'));
 app.use(session({ secret: "mysecret", resave: false, saveUninitialized: true, cookie: {maxAge: 300000}}));
 
 app.use(passport.initialize());
