@@ -331,7 +331,9 @@
         // Now Playing Bar
         async function updateNowPlaying() {
     try {
-        const response = await fetch('/api/now-playing');
+        // const response = await fetch('/api/now-playing');
+        const response = await fetch('/api/now-playing', { credentials: 'include' });
+
         if (!response.ok) throw new Error('Fetch failed');
         const data = await response.json();
         if (!data || !data.item || !data.is_playing) {
