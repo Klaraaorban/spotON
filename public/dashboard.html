@@ -136,11 +136,32 @@
       display: none;
     }
         
+    #dynamic-bg {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none; /* so it doesn't interfere with clicks */
+  z-index: -1; /* behind all content */
+  background: radial-gradient(circle at center, #1DB954, #000000 70%);
+  overflow: hidden;
+}
+
+.circle {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.2;
+  mix-blend-mode: screen;
+  filter: blur(15px);
+  background: radial-gradient(circle, #1DB954 0%, transparent 70%);
+  animation-timing-function: linear;
+}
+
     </style>
 </head>
 <body>
-    <h1>Your Spotify Dashboard</h1>
+    <div id="dynamic-bg"></div>
 
+    <h1>Spot-ON</h1>
+    <h5 style="color: #B3B3B3; margin-bottom: 20px;">your spotify details</h5>
     <!-- <div id="shared-tracks-container" style="margin-top: 20px;"></div> -->
 
     <div id="shared-tracks" class="dropdown">
@@ -435,7 +456,7 @@ loadSharedTracks();
     </script>
 
 <!-- menu button -->
-     <!-- <script>
+     <script>
     const menuButton = document.getElementById("menu-button");
     const menu = document.getElementById("menu");
 
@@ -448,77 +469,52 @@ loadSharedTracks();
         menu.classList.add("hidden");
       }
     });
-  </script> -->
-  <style>
-  .hidden {
-    display: none;
-  }
-  #menu {
-    background: #eee;
-    padding: 10px;
-    width: 150px;
-    border-radius: 6px;
-    margin-top: 5px;
-  }
-  .menu-option.active {
-    background-color: #1DB954;
-    color: white;
-    font-weight: bold;
-  }
-</style>
+  </script>
 
-<div class="menu-container">
-  <button id="menu-button" class="menu-button" aria-label="Menu">☰</button>
+  <script>
+  const bg = document.getElementById('dynamic-bg');
+  const circleCount = 12;
+  const circles = [];
 
-  <div id="menu" class="hidden">
-    <a href="#" class="menu-option" id="menu-top-tracks">Top Tracks</a><br>
-    <a href="#" class="menu-option" id="menu-top-artists">Top Artists</a><br>
-    <a href="#" class="menu-option" id="menu-life-top-tracks">Life Top Tracks</a><br>
-    <a href="#" class="menu-option" id="menu-recently-played">Recently Played</a>
-  </div>
-</div>
-
-<script>
-  const menuButton = document.getElementById('menu-button');
-  const menu = document.getElementById('menu');
-  const options = document.querySelectorAll('.menu-option');
-
-  let menuOpen = false;
-
-  // Toggle menu visibility on menu button click
-  menuButton.addEventListener('click', () => {
-    menuOpen = !menuOpen;
-    menu.classList.toggle('hidden', !menuOpen);
-
-    if (!menuOpen) {
-      // When menu closes, remove all active highlights from options
-      options.forEach(opt => opt.classList.remove('active'));
-    }
-  });
-
-  // Clicking a menu option highlights it (toggles active state)
-  options.forEach(option => {
-    option.addEventListener('click', e => {
-      e.preventDefault();
-
-      // Remove active from all options except clicked one
-      options.forEach(opt => {
-        if (opt !== option) opt.classList.remove('active');
-      });
-
-      // Toggle active on clicked option
-      option.classList.toggle('active');
+  for (let i = 0; i < circleCount; i++) {
+    const c = document.createElement('div');
+    c.classList.add('circle');
+    // random size between 100px and 250px
+    const size = 100 + Math.random() * 150;
+    c.style.width = size + 'px';
+    c.style.height = size + 'px';
+    bg.appendChild(c);
+    circles.push({
+      el: c,
+      angle: (360 / circleCount) * i,
+      radius: 150 + Math.random() * 100,
+      speed: 0.02 + Math.random() * 0.01,
+      size
     });
-  });
+  }
 
-  // Optional: Clicking outside closes menu and clears active state
-  document.addEventListener('click', e => {
-    if (!menu.contains(e.target) && !menuButton.contains(e.target)) {
-      menu.classList.add('hidden');
-      menuOpen = false;
-      options.forEach(opt => opt.classList.remove('active'));
-    }
-  });
+  function animate() {
+    circles.forEach(circle => {
+      circle.angle += circle.speed;
+      // convert angle to radians
+      const rad = circle.angle * (Math.PI / 180);
+      // center of screen
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+
+      // spiral movement using radius and angle
+      const x = centerX + circle.radius * Math.cos(rad) - circle.size / 2;
+      const y = centerY + circle.radius * Math.sin(rad) - circle.size / 2;
+
+      circle.el.style.transform = `translate(${x}px, ${y}px)`;
+    });
+
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+
+  // Optional: on window resize, update center coordinates dynamically (handled on next frame)
 </script>
 
 </body>
