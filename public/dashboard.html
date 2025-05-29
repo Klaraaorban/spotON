@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -138,7 +139,7 @@
     </style>
 </head>
 <body>
-    <h1>Spotify Dashboard</h1>
+    <h1>Your Spotify Dashboard</h1>
 
     <!-- <div id="shared-tracks-container" style="margin-top: 20px;"></div> -->
 
@@ -181,7 +182,7 @@
 </div>
 
 
-<!-- 
+
   <div class="menu-container">
     <button id="feed-button" class="menu-button">Feed</button>
     <button id="menu-button" class="menu-button" aria-label="Menu">☰</button>
@@ -192,38 +193,7 @@
       <a href="#" id="menu-life-top-tracks">Life Top Tracks</a>
       <a href="#" id="menu-recently-played">Recently Played</a>
     </div>
-  </div> -->
-
-  <div class="menu-container">
-  <button id="feed-button" class="menu-button">Feed</button>
-  <button id="menu-button" class="menu-button" aria-label="Menu">☰</button>
-
-  <div id="menu" class="menu hidden">
-    <a href="#" data-submenu="top-tracks" class="menu-link">Top Tracks</a>
-    <div id="submenu-top-tracks" class="submenu hidden">
-      <a href="#">Track 1</a><br>
-      <a href="#">Track 2</a>
-    </div>
-
-    <a href="#" data-submenu="top-artists" class="menu-link">Top Artists</a>
-    <div id="submenu-top-artists" class="submenu hidden">
-      <a href="#">Artist A</a><br>
-      <a href="#">Artist B</a>
-    </div>
-
-    <a href="#" data-submenu="life-top-tracks" class="menu-link">Life Top Tracks</a>
-    <div id="submenu-life-top-tracks" class="submenu hidden">
-      <a href="#">Track X</a><br>
-      <a href="#">Track Y</a>
-    </div>
-
-    <a href="#" data-submenu="recently-played" class="menu-link">Recently Played</a>
-    <div id="submenu-recently-played" class="submenu hidden">
-      <a href="#">Song α</a><br>
-      <a href="#">Song β</a>
-    </div>
   </div>
-</div>
 
 <div id="feed-block" style="display:none; width:60%; height:600px; background-color:rgb(34, 33, 33); color: white; overflow-y: auto; padding: 10px; margin-top: 20px; border-radius: 12px;">
   <h2 style="color:#1DB954; margin-bottom: 15px;">My Feed</h2>
@@ -479,48 +449,77 @@ loadSharedTracks();
       }
     });
   </script> -->
-  <script>
-  const menuButton   = document.getElementById("menu-button");
-  const menu         = document.getElementById("menu");
-  const links        = document.querySelectorAll(".menu-link");
-  const subDropdowns = document.querySelectorAll(".submenu");
-  let menuOpen       = false;
+  <style>
+  .hidden {
+    display: none;
+  }
+  #menu {
+    background: #eee;
+    padding: 10px;
+    width: 150px;
+    border-radius: 6px;
+    margin-top: 5px;
+  }
+  .menu-option.active {
+    background-color: #1DB954;
+    color: white;
+    font-weight: bold;
+  }
+</style>
 
-  // Toggle main menu and (on close) hide all submenus
-  menuButton.addEventListener("click", () => {
+<div class="menu-container">
+  <button id="menu-button" class="menu-button" aria-label="Menu">☰</button>
+
+  <div id="menu" class="hidden">
+    <a href="#" class="menu-option" id="menu-top-tracks">Top Tracks</a><br>
+    <a href="#" class="menu-option" id="menu-top-artists">Top Artists</a><br>
+    <a href="#" class="menu-option" id="menu-life-top-tracks">Life Top Tracks</a><br>
+    <a href="#" class="menu-option" id="menu-recently-played">Recently Played</a>
+  </div>
+</div>
+
+<script>
+  const menuButton = document.getElementById('menu-button');
+  const menu = document.getElementById('menu');
+  const options = document.querySelectorAll('.menu-option');
+
+  let menuOpen = false;
+
+  // Toggle menu visibility on menu button click
+  menuButton.addEventListener('click', () => {
     menuOpen = !menuOpen;
-    menu.classList.toggle("hidden", !menuOpen);
+    menu.classList.toggle('hidden', !menuOpen);
 
     if (!menuOpen) {
-      subDropdowns.forEach(sub => sub.classList.add("hidden"));
+      // When menu closes, remove all active highlights from options
+      options.forEach(opt => opt.classList.remove('active'));
     }
   });
 
-  // Open each submenu on its link-click, hide siblings
-  links.forEach(link => {
-    link.addEventListener("click", e => {
+  // Clicking a menu option highlights it (toggles active state)
+  options.forEach(option => {
+    option.addEventListener('click', e => {
       e.preventDefault();
-      const key     = link.getAttribute("data-submenu");
-      const submenu = document.getElementById(`submenu-${key}`);
 
-      // Hide all other submenus
-      subDropdowns.forEach(s => {
-        if (s !== submenu) s.classList.add("hidden");
+      // Remove active from all options except clicked one
+      options.forEach(opt => {
+        if (opt !== option) opt.classList.remove('active');
       });
 
-      // Toggle this one
-      submenu.classList.toggle("hidden");
+      // Toggle active on clicked option
+      option.classList.toggle('active');
     });
   });
 
-  // Click outside: close menu + submenus
-  document.addEventListener("click", e => {
+  // Optional: Clicking outside closes menu and clears active state
+  document.addEventListener('click', e => {
     if (!menu.contains(e.target) && !menuButton.contains(e.target)) {
+      menu.classList.add('hidden');
       menuOpen = false;
-      menu.classList.add("hidden");
-      subDropdowns.forEach(sub => sub.classList.add("hidden"));
+      options.forEach(opt => opt.classList.remove('active'));
     }
   });
 </script>
+
 </body>
 </html>
