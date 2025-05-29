@@ -204,28 +204,54 @@
     </div>
   </div>
 
-    <div class="header">
-    <button id="feed-button">Feed</button>
-    </div>
+  <div class="header">
+  <button id="feed-button">Feed</button>
+</div>
 
-    <!-- Container for the feed block -->
-<div id="feed-block" style="display:none; width:60%; height:400px; background-color:black; margin-top: 20px;">
-  <iframe id="feed-iframe" src="/feed" style="width:100%; height:100%; border:none;"></iframe>
+<div id="feed-block" style="display:none; width:60%; height:400px; background-color:black; color: white; overflow-y: auto; padding: 10px; margin-top: 20px;">
+  <!-- Feed content will be loaded here -->
+  <h2>My Feed</h2>
+  <div id="feed-content">Loading...</div>
 </div>
 
 <script>
   const feedButton = document.getElementById('feed-button');
   const feedBlock = document.getElementById('feed-block');
+  const feedContent = document.getElementById('feed-content');
 
-  feedButton.addEventListener('click', () => {
-    // Toggle feed block visibility
+  feedButton.addEventListener('click', async () => {
     if (feedBlock.style.display === 'none') {
       feedBlock.style.display = 'block';
+
+      // Example: fetch your feed data via API and display it inside feedContent
+      try {
+        const res = await fetch('/api/shared-tracks');  // or any feed API route you have
+        if (!res.ok) throw new Error('Failed to fetch feed');
+        const data = await res.json();
+
+        if (data.length === 0) {
+          feedContent.innerHTML = '<p>No shared tracks yet.</p>';
+          return;
+        }
+
+        // Build HTML list from the feed data
+        feedContent.innerHTML = data.map(track => 
+          `<div style="margin-bottom: 10px;">
+             <strong>${track.track}</strong> by ${track.artist}
+           </div>`
+        ).join('');
+
+      } catch (error) {
+        feedContent.innerHTML = '<p>Error loading feed.</p>';
+        console.error(error);
+      }
     } else {
       feedBlock.style.display = 'none';
     }
   });
 </script>
+  
+
     <style>
         @keyframes spin {
             0% { transform: rotate(0deg); }
