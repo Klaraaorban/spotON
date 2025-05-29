@@ -171,24 +171,6 @@
         <ul id="recently-played-list"></ul>
     </div>
 
-<!-- Now playing music -->
-<div id="now-playing-box" style="position: fixed; bottom: 20px; right: 20px; width: 360px; background-color: #282828; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.7); display: flex; padding: 12px; align-items: center; font-family: 'Arial', sans-serif; color: white; cursor: default; user-select: none; z-index: 1000; overflow: hidden;">
-  <div id="blurred-bg" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; filter: blur(20px); opacity: 0.15; background-position: center; background-size: cover; z-index: 0; border-radius: 12px; transition: background-image 0.5s ease;"></div>
-  
-  <img id="now-playing-album-art" alt="Album Art" style="height: 60px; width: 60px; border-radius: 50%; object-fit: cover; background-color: #000; flex-shrink: 0; z-index: 2; animation: spin 20s linear infinite;" />
-  
-  <div style="display: flex; flex-direction: column; justify-content: center; margin-left: 15px; overflow: hidden; flex-grow: 1; z-index: 2;">
-    <div id="now-playing-track" style="font-weight: 700; font-size: 1.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #1DB954;">Not Playing</div>
-    <div id="now-playing-artist" style="font-size: 0.9rem; color: #B3B3B3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px;"></div>
-    <div id="now-playing-album" style="font-size: 0.85rem; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 4px; font-style: italic;"></div>
-  </div>
-  
-  <div style="z-index: 2; margin-left: auto;">
-    <button id="share-now-playing" style="padding: 6px 12px; background-color: #1DB954; border: none; border-radius: 20px; color: white; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: background 0.3s ease;">
-      Share
-    </button>
-  </div>
-</div>
 <!-- currently playing -->
 <div id="current-track">
     <img id="current-image" src="" alt="Album Art" />
@@ -367,43 +349,6 @@ setInterval(fetchCurrentMusic, 15000);
         toggleSection('menu-shared-tracks', 'shared-tracks', '/api/shared-tracks', 'shared-tracks-list', track => {
             return `<span class="track-name">${track.track}</span> by <span class="artist-name">${track.artist}</span>`;
         });
-
-
-// Now Playing Bar
-        async function updateNowPlaying() {
-    try {
-        const response = await fetch('/api/now-playing');
-        if (!response.ok) throw new Error('Fetch failed');
-        const data = await response.json();
-        if (!data || !data.item || !data.is_playing) {
-            displayNoMusic();
-            return;
-        }
-        const track = data.item;
-        const artists = track.artists.map(artist => artist.name).join(', ');
-        const albumName = track.album.name || '';
-        const albumArt = track.album.images[0]?.url || '';
-
-        document.getElementById('now-playing-album-art').style.display = 'block';
-        document.getElementById('now-playing-album-art').src = albumArt;
-        document.getElementById('now-playing-track').textContent = track.name;
-        document.getElementById('now-playing-artist').textContent = artists;
-        document.getElementById('now-playing-album').textContent = albumName;
-        document.getElementById('blurred-bg').style.backgroundImage = `url(${albumArt})`;
-    } catch (error) {
-        displayNoMusic();
-    }
-}
-
-function displayNoMusic() {
-    document.getElementById('now-playing-album-art').style.display = 'none';
-    document.getElementById('now-playing-track').textContent = 'No music playing';
-    document.getElementById('now-playing-artist').textContent = '';
-    document.getElementById('now-playing-album').textContent = '';
-}
-
-updateNowPlaying();
-setInterval(updateNowPlaying, 15000);
 
     document.getElementById('share-now-playing').addEventListener('click', async () => {
   const track = document.getElementById('now-playing-track').textContent;
