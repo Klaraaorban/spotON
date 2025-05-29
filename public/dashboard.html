@@ -142,10 +142,10 @@
 
     <!-- <div id="shared-tracks-container" style="margin-top: 20px;"></div> -->
 
-    <!-- <div id="shared-tracks" class="dropdown">
+    <div id="shared-tracks" class="dropdown">
         <h2>My Feed</h2>
-        <div id="shared-tracks-container" style="margin-top: 20px;"></div>
-    </div> -->
+        <ul id="shared-tracks-list" style="margin-top: 20px; list-style: none; padding: 0;"></ul>
+    </div>
 
 
     <!-- <button id="fetch-tracks">Show My Tracks</button> -->
@@ -276,6 +276,9 @@
         return `<span class="track-name">${track.name}</span> by <span class="artist-name">${track.artist}</span>`;
         });
 
+        toggleSection('menu-shared-tracks', 'shared-tracks', '/api/shared-tracks', 'shared-tracks-list', track => {
+            return `<span class="track-name">${track.track}</span> by <span class="artist-name">${track.artist}</span>`;
+        });
 
         // Now Playing Bar
         async function updateNowPlaying() {
