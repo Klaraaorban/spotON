@@ -222,24 +222,34 @@
         gap: 5px;
         margin-top: 15px;
       }
-    #current-image {
+
+#current-image {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 10px;
+  transition: border-radius 0.4s ease, transform 0.6s linear;
+}
+
+#current-image:hover {
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Keep your existing mobile styles for #current-image unchanged */
+@media (max-width: 600px) {
+  #current-image {
     width: 120px;
     height: 120px;
-    object-fit: cover;
     border-radius: 10px;
-    transition: border-radius 0.4s ease, transform 0.6s linear;
-    }
+  }
+}
 
-    /* On hover: circle + rotate fast */
-    #current-image:hover {
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    }
-
-    /* Keyframes for rotation */
-    @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
     }
 
     .dropdown {
