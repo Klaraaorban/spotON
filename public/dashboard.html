@@ -210,7 +210,10 @@
   </div> 
 
 </div> -->
-
+<div class="header">
+  <a href="/feed" class="feed-link">
+    <button>Go to Feed</button>
+  </a>
 <!-- menu -->
     <div class="menu-container">
   <button id="menu-button" class="menu-button" aria-label="Menu">☰</button>
@@ -222,7 +225,7 @@
     <a href="#" id="menu-recently-played">Recently Played</a>
   </div>
 </div>
-
+</div>
 
     <style>
         @keyframes spin {
@@ -413,6 +416,11 @@ loadSharedTracks();
         menu.classList.add("hidden");
       }
     });
+    // feed button
+    document.getElementById('feed-button').addEventListener('click', () => {
+        window.location.href = '/feed';
+        });
+
   </script>
 </body>
 </html>
