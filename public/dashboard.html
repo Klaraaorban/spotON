@@ -176,7 +176,7 @@
   <div id="blurred-bg" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; filter: blur(20px); opacity: 0.15; background-position: center; background-size: cover; z-index: 0; border-radius: 12px; transition: background-image 0.5s ease;"></div>
 
   <div style="display: flex; align-items: center; z-index: 2;">
-    <img id="now-playing-album-art" alt="Album Art" style="height: 60px; width: 60px; border-radius: 50%; object-fit: cover; background-color: #000; flex-shrink: 0; animation: spin 20s linear infinite;" />
+    <img id="now-playing-album-art" alt="" style="height: 60px; width: 60px; border-radius: 50%; object-fit: cover; background-color: #000; flex-shrink: 0; animation: spin 20s linear infinite;" />
     <div style="display: flex; flex-direction: column; justify-content: center; margin-left: 15px; overflow: hidden; flex-grow: 1;">
       <div id="now-playing-track" style="font-weight: 700; font-size: 1.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #1DB954;">Not Playing</div>
       <div id="now-playing-artist" style="font-size: 0.9rem; color: #B3B3B3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px;"></div>
@@ -356,7 +356,7 @@
 
 function displayNoMusic() {
     document.getElementById('now-playing-album-art').style.display = 'none';
-    document.getElementById('now-playing-track').textContent = 'No music playing';
+    document.getElementById('now-playing-track').textContent = 'Play some music ;)';
     document.getElementById('now-playing-artist').textContent = '';
     document.getElementById('now-playing-album').textContent = '';
 }
@@ -370,7 +370,7 @@ setInterval(updateNowPlaying, 15000);
   const album = document.getElementById('now-playing-album').textContent;
   const image_url = document.getElementById('now-playing-album-art').src;
 
-  if (track === 'No music playing') return alert('No track to share');
+  if (track === 'Play some music ;)') return alert('No track to share');
 
   const payload = { track, artist, album, image_url };
     console.log('Sharing payload:', payload);
