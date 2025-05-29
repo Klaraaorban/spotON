@@ -342,6 +342,19 @@
 
         if (!response.ok) throw new Error('Fetch failed');
         const data = await response.json();
+        // Uncomment for testing fallback data:
+    if (!data || !data.item) {
+      data = {
+        item: {
+          name: "Test Song",
+          artists: [{ name: "Test Artist" }],
+          album: {
+            name: "Test Album",
+            images: [{ url: "https://via.placeholder.com/150" }]
+          }
+        }
+      };
+    }
         if (!data || !data.item) {
             displayNoMusic();
             return;
