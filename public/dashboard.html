@@ -303,8 +303,10 @@
 
 #current-image {
   border-radius: 10px;
-  transition: transform 0.6s linear, border-radius 0.4s ease;
-  display: inline-block; /* Ensure transform works smoothly */
+  transition: border-radius 0.4s ease;
+  display: inline-block;
+  will-change: transform;
+  transform-origin: center center;
 }
 
 #current-image:hover {
