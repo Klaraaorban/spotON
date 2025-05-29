@@ -223,33 +223,12 @@
         margin-top: 15px;
       }
 
-#current-image {
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
-  border-radius: 10px;
-  transition: border-radius 0.4s ease, transform 0.6s linear;
-}
-
-#current-image:hover {
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-/* Keep your existing mobile styles for #current-image unchanged */
-@media (max-width: 600px) {
-  #current-image {
-    width: 120px;
-    height: 120px;
-    border-radius: 10px;
-  }
-}
-
+      #current-image {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 10px;
+      }
     }
 
     .dropdown {
@@ -320,6 +299,22 @@
     0 0 4px #ffffff55,
     0 0 10px #ffffff22;
   margin-bottom: 25px;
+}
+
+#current-image {
+  border-radius: 10px;
+  transition: transform 0.6s linear, border-radius 0.4s ease;
+  display: inline-block; /* Ensure transform works smoothly */
+}
+
+#current-image:hover {
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 
