@@ -435,18 +435,29 @@ loadSharedTracks();
 
 <!-- menu button -->
      <script>
-    const menuButton = document.getElementById("menu-button");
-    const menu = document.getElementById("menu");
+  const menuButton = document.getElementById("menu-button");
+  const menu = document.getElementById("menu");
 
-    menuButton.addEventListener("click", () => {
-      menu.classList.toggle("hidden");
-    });
+  // Add this: Select all your sub-dropdowns
+  const subDropdowns = document.querySelectorAll(".submenu");
 
-    document.addEventListener("click", (event) => {
-      if (!menu.contains(event.target) && !menuButton.contains(event.target)) {
-        menu.classList.add("hidden");
-      }
-    });
-  </script>
+  menuButton.addEventListener("click", () => {
+    // Toggle the main menu
+    menu.classList.toggle("hidden");
+
+    // Hide all submenus
+    subDropdowns.forEach(sub => sub.classList.add("hidden"));
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!menu.contains(event.target) && !menuButton.contains(event.target)) {
+      menu.classList.add("hidden");
+
+      // Also close all submenus when clicking outside
+      subDropdowns.forEach(sub => sub.classList.add("hidden"));
+    }
+  });
+</script>
+
 </body>
 </html>
