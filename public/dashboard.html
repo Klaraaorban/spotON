@@ -331,25 +331,10 @@
 // Now Playing Bar
         async function updateNowPlaying() {
     try {
-        // const response = await fetch('/api/now-playing');
-        const response = await fetch('/api/now-playing', { credentials: 'include' });
-
+        const response = await fetch('/api/now-playing');
         if (!response.ok) throw new Error('Fetch failed');
-        let data = await response.json();
-        // Uncomment for testing fallback data:
-    if (!data || !data.item) {
-      data = {
-        item: {
-          name: "Test Song",
-          artists: [{ name: "Test Artist" }],
-          album: {
-            name: "Test Album",
-            images: [{ url: "https://via.placeholder.com/150" }]
-          }
-        }
-      };
-    }
-        if (!data || !data.item) {
+        const data = await response.json();
+        if (!data || !data.item || !data.is_playing) {
             displayNoMusic();
             return;
         }
@@ -371,17 +356,13 @@
 
 function displayNoMusic() {
     document.getElementById('now-playing-album-art').style.display = 'none';
-    document.getElementById('now-playing-track').textContent = 'Play some music ;';
+    document.getElementById('now-playing-track').textContent = 'No music playing';
     document.getElementById('now-playing-artist').textContent = '';
     document.getElementById('now-playing-album').textContent = '';
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    updateNowPlaying();
-    setInterval(updateNowPlaying, 15000);
-});
-//updateNowPlaying();
-// setInterval(updateNowPlaying, 15000);
+updateNowPlaying();
+setInterval(updateNowPlaying, 15000);
 
     document.getElementById('share-now-playing').addEventListener('click', async () => {
   const track = document.getElementById('now-playing-track').textContent;
