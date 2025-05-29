@@ -63,10 +63,6 @@ app.get('/dashboard', (req, res) => {
     res.sendFile(__dirname + '/public/dashboard.html'); 
 });
 
-app.get('/feed', (req, res) => {
-    if (!req.user) return res.redirect('/');
-    res.sendFile(__dirname + '/public/feed.html'); 
-});
 async function refreshAccessToken(refreshToken) {
     const response = await axios.post('https://accounts.spotify.com/api/token', new URLSearchParams({
         grant_type: 'refresh_token',
